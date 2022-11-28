@@ -19,4 +19,3 @@ Variable          | Default                        | Description
 ```
 docker build -t snmp-probe . --no-cache
 ```
-# snmp-probe
