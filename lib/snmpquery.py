@@ -2,10 +2,10 @@ import logging
 from asyncsnmplib.client import Snmp, SnmpV1, SnmpV3
 from asyncsnmplib.exceptions import SnmpNoConnection, SnmpNoAuthParams
 from asyncsnmplib.mib.utils import on_result
-from libprobe.asset import Asset
-from libprobe.exceptions import CheckException
 from asyncsnmplib.v3.auth import AUTH_PROTO
 from asyncsnmplib.v3.encr import PRIV_PROTO
+from libprobe.asset import Asset
+from libprobe.exceptions import CheckException, IgnoreCheckException
 
 
 def snmpv3_credentials(asset_config: dict):
@@ -74,7 +74,7 @@ async def snmpquery(
             cred = snmpv3_credentials(asset_config)
         except Exception as e:
             logging.warning(f'invalid snmpv3 credentials {asset}: {e}')
-            return
+            raise IgnoreCheckException
         try:
             cl = SnmpV3(
                 host=address,
@@ -82,7 +82,7 @@ async def snmpquery(
             )
         except Exception as e:
             logging.warning(f'invalid snmpv3 client config {asset}: {e}')
-            return
+            raise IgnoreCheckException
     elif version == '1':
         cl = SnmpV1(
             host=address,
@@ -90,34 +90,31 @@ async def snmpquery(
         )
     else:
         logging.warning(f'unsupported snmp version {asset}: {version}')
-        return
+        raise IgnoreCheckException
 
     try:
         await cl.connect()
-    except SnmpNoConnection:
-        logging.error(f'unable to connect to {asset}: {address}')
-        return
+    except SnmpNoConnection as e:
+        raise CheckException(f'unable to connect')
     except SnmpNoAuthParams:
-        logging.error(f'unable to set auth params {asset}')
-        cl.close()
-        return
-
-    results = {}
-    try:
-        for oid in queries:
-            result = await cl.walk(oid)
-            try:
-                name, result = on_result(oid, result)
-            except Exception as e:
-                raise CheckException(
-                    f'Check result error: {e.__class__.__name__}: {e}')
-            else:
-                results[name] = result
-    except CheckException:
-        raise
-    except Exception as e:
-        raise CheckException(f'Check error: {e.__class__.__name__}: {e}')
+        raise CheckException(f'unable to connect: failed to set auth params')
     else:
-        return results
+        results = {}
+        try:
+            for oid in queries:
+                result = await cl.walk(oid)
+                try:
+                    name, result = on_result(oid, result)
+                except Exception as e:
+                    raise CheckException(
+                        f'parse result error: {e.__class__.__name__}: {e}')
+                else:
+                    results[name] = result
+        except CheckException:
+            raise
+        except Exception as e:
+            raise CheckException(f'check error: {e.__class__.__name__}: {e}')
+        else:
+            return results
     finally:
         cl.close()
