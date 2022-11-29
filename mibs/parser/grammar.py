@@ -85,7 +85,11 @@ class MibsGrammar(Grammar):
         most_greedy=False))
     s_description = Sequence('DESCRIPTION', r_quotes)
     s_access_ = Sequence('ACCESS', Choice(
-        'read-only', 'read-write', 'write-only', 'not-accessible', most_greedy=False))
+        'read-only',
+        'read-write',
+        'write-only',
+        'not-accessible',
+        most_greedy=False))
     s_access = Sequence('MAX-ACCESS', Choice(
         'not-accessible',
         'accessible-for-notify',

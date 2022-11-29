@@ -139,7 +139,10 @@ def parse_tree(node):
 
     mib = {}
     mib['IMPORTS'] = [
-        [a.children[2].string, [n.string for i, n in enumerate(a.children[0].children) if i % 2 == 0]]
+        [
+            a.children[2].string,
+            [n.string for i, n in enumerate(a.children[0].children)
+             if i % 2 == 0]]
         for a in node.children[5].children[0].children[1].children
     ] if node.children[5].children else []
 
