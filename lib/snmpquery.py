@@ -27,23 +27,24 @@ def snmpv3_credentials(asset_config: dict):
                 raise Exception(f'missing `auth.password`')
 
             priv = asset_config.get('priv')
-            priv_type = priv.get('type', 'USM_PRIV_NONE')
-            if priv_type != 'USM_PRIV_NONE':
-                if priv_type not in PRIV_PROTO:
-                    raise Exception(f'invalid `priv.type`')
+            if priv is not None:
+                priv_type = priv.get('type', 'USM_PRIV_NONE')
+                if priv_type != 'USM_PRIV_NONE':
+                    if priv_type not in PRIV_PROTO:
+                        raise Exception(f'invalid `priv.type`')
 
-                try:
-                    priv_passwd = priv['password']
-                except KeyError:
-                    raise Exception(f'missing `priv.password`')
+                    try:
+                        priv_passwd = priv['password']
+                    except KeyError:
+                        raise Exception(f'missing `priv.password`')
 
-                return {
-                    'username': user_name,
-                    'auth_proto': auth_type,
-                    'auth_passwd': auth_passwd,
-                    'priv_proto': priv_type,
-                    'priv_passwd': priv_passwd,
-                }
+                    return {
+                        'username': user_name,
+                        'auth_proto': auth_type,
+                        'auth_passwd': auth_passwd,
+                        'priv_proto': priv_type,
+                        'priv_passwd': priv_passwd,
+                    }
             else:
                 return {
                     'username': user_name,
