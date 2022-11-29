@@ -18,6 +18,9 @@ async def check_processor(
         cpus = [item.get('hrProcessorLoad', 0)
                 for item in state_data['hrProcessorEntry']]
         aggr = sum(cpus) / len(cpus) if cpus else 0
-        state_data['hrProcessor'] = [{'name': 'processor', 'hrProcessorLoadAverage': aggr}]
+        state_data['hrProcessor'] = [{
+            'name': 'processor',
+            'hrProcessorLoadAverage': aggr
+        }]
 
     return state_data
