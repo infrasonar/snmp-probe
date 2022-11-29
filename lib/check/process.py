@@ -18,12 +18,12 @@ async def check_process(
     counts = Counter()
     itms = state['hrSWRunEntry']
     for item in itms:
-        runName = item.get('hrSWRunName')
-        if runName is not None:
+        run_name = item.get('hrSWRunName')
+        if run_name is not None:
             item['name'] = \
-                '{}#{}'.format(runName, counts[runName]) \
-                if counts[runName] > 0 else runName
-            counts[runName] += 1
+                f'{run_name}#{counts[run_name]}' \
+                if counts[run_name] > 0 else run_name
+            counts[run_name] += 1
 
     return {
         'process': itms,
