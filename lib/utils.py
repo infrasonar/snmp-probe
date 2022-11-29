@@ -84,12 +84,13 @@ def ip_mib_address(key, item):
         except Exception:
             raise Exception('Unable to derive address-prefix info from '
                             f'oid-part {prefix_key}')
-        netmask = addr_netmask(prefix_addr, prefix_len)
         item['ipAddressPrefixIfIndex'] = prefix_ifindex
         item['ipAddressPrefixType'] = prefix_typ_name
         item['ipAddressPrefixAddr'] = prefix_addr
         item['ipAddressPrefixLength'] = prefix_len
-        item['ipAddressNetMask'] = netmask
+        netmask = addr_netmask(prefix_addr, prefix_len)
+        if netmask is not None:
+            item['ipAddressNetMask'] = netmask
 
     return item
 

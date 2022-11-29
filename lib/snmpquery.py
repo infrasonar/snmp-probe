@@ -117,15 +117,18 @@ async def snmpquery(
                 try:
                     name, result = on_result(oid, result)
                 except Exception as e:
+                    msg = str(e) or type(e).__name__
                     raise CheckException(
-                        f'parse result error: {e.__class__.__name__}: {e}')
+                        f'parse result error: {msg}')
                 else:
                     results[name] = result
         except CheckException:
             raise
         except Exception as e:
-            raise CheckException(f'check error: {e.__class__.__name__}: {e}')
+            msg = str(e) or type(e).__name__
+            raise CheckException(msg)
         else:
             return results
     finally:
+        # safe to close whatever the connection status is
         cl.close()

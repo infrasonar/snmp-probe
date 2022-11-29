@@ -28,12 +28,13 @@ async def check_storage(
                 used = item.get('hrStorageUsed', 0) * \
                     item['hrStorageAllocationUnits']
                 free = total - used
-                free_percentage = 100 * free / total if total else None
-                used_percentage = 100 * used / total if total else None
                 item['hrStorageSizeInBytes'] = total
                 item['hrStorageFreeInBytes'] = free
                 item['hrStorageUsedInBytes'] = used
-                item['hrStorageFreePercentage'] = free_percentage
-                item['hrStorageUsedPercentage'] = used_percentage
+                if total:
+                    free_percentage = 100 * free / total if total else None
+                    used_percentage = 100 * used / total if total else None
+                    item['hrStorageFreePercentage'] = free_percentage
+                    item['hrStorageUsedPercentage'] = used_percentage
 
     return state_data
