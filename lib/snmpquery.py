@@ -4,6 +4,53 @@ from asyncsnmplib.exceptions import SnmpNoConnection, SnmpNoAuthParams
 from asyncsnmplib.mib.utils import on_result
 from libprobe.asset import Asset
 from libprobe.exceptions import CheckException
+from asyncsnmplib.v3.auth import AUTH_PROTO
+from asyncsnmplib.v3.encr import PRIV_PROTO
+
+
+def snmpv3_credentials(asset_config: dict):
+    try:
+        user_name = asset_config['user_name']
+    except KeyError:
+        raise Exception(f'missing `user_name`')
+
+    auth_type = asset_config.get('auth_type', 'USM_AUTH_NONE')
+    if auth_type != 'USM_AUTH_NONE':
+        if auth_type not in AUTH_PROTO:
+            raise Exception(f'invalid `auth_type`')
+
+        try:
+            auth_passwd = asset_config['auth_passwd']
+        except KeyError:
+            raise Exception(f'missing `auth_passwd`')
+
+        priv_type = asset_config.get('priv_type', 'USM_PRIV_NONE')
+        if priv_type != 'USM_PRIV_NONE':
+            if priv_type not in PRIV_PROTO:
+                raise Exception(f'invalid `priv_type`')
+
+            try:
+                priv_passwd = asset_config['priv_passwd']
+            except KeyError:
+                raise Exception(f'missing `priv_passwd`')
+
+            return {
+                'username': user_name,
+                'auth_proto': auth_type,
+                'auth_passwd': auth_passwd,
+                'priv_proto': priv_type,
+                'priv_passwd': priv_passwd,
+            }
+        else:
+            return {
+                'username': user_name,
+                'auth_proto': auth_type,
+                'auth_passwd': auth_passwd,
+            }
+    else:
+        return {
+            'username': user_name,
+        }
 
 
 async def snmpquery(
@@ -15,7 +62,6 @@ async def snmpquery(
     if address is None:
         address = asset.name
 
-    # TODO in asset_config aparte sectie voor credentials (snmpv3)?
     version = asset_config.get('version', '2c')
     community = asset_config.get('community', 'public')
     if version == '2c':
@@ -24,9 +70,10 @@ async def snmpquery(
             community=community,
         )
     elif version == '3':
-        cred = asset_config['credentials']
-        if cred is None:
-            logging.warning(f'missing credentials for {address}')
+        try:
+            cred = snmpv3_credentials(asset_config)
+        except Exception as e:
+            logging.warning(f'invalid snmpv3 credentials {asset}: {e}')
             return
         try:
             cl = SnmpV3(
@@ -34,7 +81,7 @@ async def snmpquery(
                 **cred,
             )
         except Exception as e:
-            logging.warning(f'invalid snmpv3 client config for {address}')
+            logging.warning(f'invalid snmpv3 client config {asset}: {e}')
             return
     elif version == '1':
         cl = SnmpV1(
@@ -42,16 +89,16 @@ async def snmpquery(
             community=community,
         )
     else:
-        logging.warning(f'unsupported snmpVersion {version}')
+        logging.warning(f'unsupported snmp version {asset}: {version}')
         return
 
     try:
         await cl.connect()
     except SnmpNoConnection:
-        logging.error(f'unable to connect to {asset.id} {address}')
+        logging.error(f'unable to connect to {asset}: {address}')
         return
     except SnmpNoAuthParams:
-        logging.error(f'unable to set auth params for {asset.id} {address}')
+        logging.error(f'unable to set auth params {asset}')
         cl.close()
         return
 
