@@ -27,5 +27,4 @@ async def check_process(
 
     return {
         'process': itms,
-        'processCount': [{'name': 'processCount', 'Count': len(itms)}],
     }
