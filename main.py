@@ -1,4 +1,5 @@
 from libprobe.probe import Probe
+from lib.check.base import check_base
 from lib.check.processor import check_processor
 from lib.check.device import check_device
 from lib.check.interface import check_interface
@@ -17,6 +18,7 @@ from lib.version import __version__ as version
 
 if __name__ == '__main__':
     checks = {
+        'base': check_base,
         'device': check_device,
         'entity': check_entity,
         'entitySensor': check_entity_sensor,
