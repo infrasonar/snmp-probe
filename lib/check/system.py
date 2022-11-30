@@ -14,4 +14,11 @@ async def check_system(
         check_config: dict):
 
     state = await snmpquery(asset, asset_config, check_config, QUERIES)
+    if 'system' in state:
+        state['system'] = [{
+            (name[3:] if name.startswith('sys') else name): value
+            for item in state['system']
+            for name, value in item.items()
+        }]
+
     return state
