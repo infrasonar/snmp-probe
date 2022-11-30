@@ -7,7 +7,7 @@ QUERIES = (
 )
 
 
-async def check_entity_sensor(
+async def check_sensor(
         asset: Asset,
         asset_config: dict,
         check_config: dict):
