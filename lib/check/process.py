@@ -16,9 +16,9 @@ async def check_process(
     state = await snmpquery(asset, asset_config, check_config, QUERIES)
 
     counts = Counter()
-    itms = state['hrSWRunEntry']
+    itms = state.pop('hrSWRun', [])
     for item in itms:
-        run_name = item.get('hrSWRunName')
+        run_name = item.get('Name')
         if run_name is not None:
             item['name'] = \
                 f'{run_name}#{counts[run_name]}' \
@@ -27,5 +27,5 @@ async def check_process(
 
     return {
         'process': itms,
-        'processCount': [{'name': 'processCount', 'count': len(itms)}],
+        'processCount': [{'name': 'processCount', 'Count': len(itms)}],
     }

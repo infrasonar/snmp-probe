@@ -15,7 +15,7 @@ async def check_tcp_listener(
 
     state = await snmpquery(asset, asset_config, check_config, QUERIES)
 
-    for item in state['tcpListenerEntry']:
+    for item in state['tcpListener']:
         tcp_mib_listener(item['name'], item)
 
     return state

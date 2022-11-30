@@ -51,11 +51,11 @@ async def check_interface(
     state_data = await snmpquery(asset, asset_config, check_config, QUERIES)
 
     counts = Counter()
-    itms = state_data.get('ifEntry', [])
-    if_x_entry = {i['name']: i for i in state_data.pop('ifXEntry', [])}
+    itms = state_data.get('if', [])
+    if_x_entry = {i['name']: i for i in state_data.pop('ifX', [])}
     for item in itms:
         key = item['name']
-        name = item['ifDescr']
+        name = item['Descr']
         idx = counts[name]
         counts[name] += 1
         item['name'] = f'{name}_{idx}' if idx else name
@@ -65,17 +65,17 @@ async def check_interface(
         except KeyError:
             continue
 
-        if 'ifHCInOctets' in item:
-            item['ifInOctets'] = item.pop('ifHCInOctets')
-        if 'ifHCOutOctets' in item:
-            item['ifOutOctets'] = item.pop('ifHCOutOctets')
+        if 'HCInOctets' in item:
+            item['InOctets'] = item.pop('HCInOctets')
+        if 'HCOutOctets' in item:
+            item['OutOctets'] = item.pop('HCOutOctets')
 
-        if 'ifSpeed' in item and 'ifHighSpeed' in item:
+        if 'Speed' in item and 'HighSpeed' in item:
             # max value for this metric, shown if value is overloading
-            if (item['ifSpeed'] == 4294967295 and
-                    item['ifHighSpeed'] != 4294):
+            if (item['Speed'] == 4294967295 and
+                    item['HighSpeed'] != 4294):
                 # ifspeed is in bits, ifHighSpeed in MBits.
-                item['ifSpeed'] = item['ifHighSpeed'] * 1000000
+                item['Speed'] = item['HighSpeed'] * 1000000
 
     return {
         'interface': itms

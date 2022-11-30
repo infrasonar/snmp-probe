@@ -14,13 +14,12 @@ async def check_processor(
 
     state_data = await snmpquery(asset, asset_config, check_config, QUERIES)
 
-    if 'hrProcessorEntry' in state_data:
-        cpus = [item.get('hrProcessorLoad', 0)
-                for item in state_data['hrProcessorEntry']]
+    if 'hrProcessor' in state_data:
+        cpus = [item.get('Load', 0) for item in state_data['hrProcessor']]
         aggr = sum(cpus) / len(cpus) if cpus else 0
-        state_data['hrProcessor'] = [{
+        state_data['hrProcessorTotal'] = [{
             'name': 'processor',
-            'hrProcessorLoadAverage': aggr
+            'LoadAverage': aggr
         }]
 
     return state_data

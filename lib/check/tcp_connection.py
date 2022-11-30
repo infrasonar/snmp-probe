@@ -15,7 +15,7 @@ async def check_tcp_connection(
 
     state = await snmpquery(asset, asset_config, check_config, QUERIES)
 
-    for item in state['tcpConnectionEntry']:
+    for item in state['tcpConnection']:
         tcp_mib_connection(item['name'], item)
 
     return state

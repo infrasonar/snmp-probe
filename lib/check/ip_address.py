@@ -15,7 +15,7 @@ async def check_ip_address(
 
     state = await snmpquery(asset, asset_config, check_config, QUERIES)
 
-    for item in state['ipAddressEntry']:
+    for item in state['ipAddress']:
         ip_mib_address(item['name'], item)
 
     return state

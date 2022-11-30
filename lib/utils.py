@@ -61,13 +61,13 @@ def ip_mib_address(key, item):
     except Exception:
         raise Exception(f'Unable to derive address info from oid-part {key}')
 
-    item['ipAddressAddrType'] = local_typ_name
-    item['ipAddressAddr'] = local_addr
+    item['AddrType'] = local_typ_name
+    item['Addr'] = local_addr
 
     # when value is 0.0 or 1.1 ignore
     # some devices don't follow mib's syntax and return None
     # in case of an unparseable int instead of a RowPointer (oid)
-    if 'ipAddressPrefix' in item and item['ipAddressPrefix'] not in (
+    if 'Prefix' in item and item['Prefix'] not in (
         'zeroDotZero',  # oid 0.0
         'internet',  # oid 1.1
         None,
@@ -75,7 +75,7 @@ def ip_mib_address(key, item):
         n = 10  # length of 1.3.6.1.2.1.4.32.1.5 IP-MIB::ipAddressPrefixOrigin
         try:
             prefix_key = tuple(
-                map(int, item['ipAddressPrefix'].split('.')[n:]))
+                map(int, item['Prefix'].split('.')[n:]))
             prefix_ifindex = prefix_key[0]
             prefix_typ = prefix_key[1]
             prefix_typ_name, prefix_typ_func = ADDRESS_TP[prefix_typ]
@@ -84,13 +84,13 @@ def ip_mib_address(key, item):
         except Exception:
             raise Exception('Unable to derive address-prefix info from '
                             f'oid-part {prefix_key}')
-        item['ipAddressPrefixIfIndex'] = prefix_ifindex
-        item['ipAddressPrefixType'] = prefix_typ_name
-        item['ipAddressPrefixAddr'] = prefix_addr
-        item['ipAddressPrefixLength'] = prefix_len
+        item['PrefixIfIndex'] = prefix_ifindex
+        item['PrefixType'] = prefix_typ_name
+        item['PrefixAddr'] = prefix_addr
+        item['PrefixLength'] = prefix_len
         netmask = addr_netmask(prefix_addr, prefix_len)
         if netmask is not None:
-            item['ipAddressNetMask'] = netmask
+            item['NetMask'] = netmask
 
     return item
 
@@ -111,12 +111,12 @@ def tcp_mib_connection(key, item):
     except Exception:
         raise Exception(f'Unable to derive address info from oid-part {key}')
 
-    item['tcpConnectionLocalAddressType'] = local_typ_name
-    item['tcpConnectionLocalAddress'] = local_addr
-    item['tcpConnectionLocalPort'] = local_pt
-    item['tcpConnectionRemAddressType'] = remote_typ_name
-    item['tcpConnectionRemAddress'] = remote_addr
-    item['tcpConnectionRemPort'] = remote_pt
+    item['LocalAddressType'] = local_typ_name
+    item['LocalAddress'] = local_addr
+    item['LocalPort'] = local_pt
+    item['RemAddressType'] = remote_typ_name
+    item['RemAddress'] = remote_addr
+    item['RemPort'] = remote_pt
     return item
 
 
@@ -130,7 +130,7 @@ def tcp_mib_listener(key, item):
     except Exception:
         raise Exception(f'Unable to derive address info from oid-part {key}')
 
-    item['tcpListenerLocalAddressType'] = local_typ_name
-    item['tcpListenerLocalAddress'] = local_addr
-    item['tcpListenerLocalPort'] = local_pt
+    item['LocalAddressType'] = local_typ_name
+    item['LocalAddress'] = local_addr
+    item['LocalPort'] = local_pt
     return item
