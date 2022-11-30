@@ -19,3 +19,36 @@ Variable          | Default                        | Description
 ```
 docker build -t snmp-probe . --no-cache
 ```
+
+## Config
+
+Example configuration: _(the example below is the default when no config is given)_
+
+```yaml
+snmp:
+  config:
+    version: "2c"
+    community:
+      secret: public
+```
+
+For SNMP version 3:
+
+```yaml
+snmp:
+  config:
+    version: "3"
+    community:
+      secret: public
+    username: alice
+    auth:
+      # auth is optional; type USM_AUTH_NONE is used when omitted.
+      # supported: USM_AUTH_HMAC96_MD5, USM_AUTH_HMAC96_SHA or USM_AUTH_NONE
+      type: USM_AUTH_HMAC96_SHA
+      password: "my secret password"
+    priv:
+      # priv is optional; type USM_PRIV_NONE is used when omitted.
+      # supported: USM_PRIV_CBC56_DES, USM_PRIV_CFB128_AES or USM_PRIV_NONE
+      type: USM_PRIV_CFB128_AES
+      password: "my secret password"
+```
