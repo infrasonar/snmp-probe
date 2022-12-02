@@ -5,7 +5,7 @@ from asyncsnmplib.mib.utils import on_result
 from asyncsnmplib.v3.auth import AUTH_PROTO
 from asyncsnmplib.v3.encr import PRIV_PROTO
 from libprobe.asset import Asset
-from libprobe.exceptions import CheckException, IgnoreCheckException
+from libprobe.exceptions import CheckException, IgnoreResultException
 
 
 def snmpv3_credentials(asset_config: dict):
@@ -73,7 +73,7 @@ async def snmpquery(
             assert isinstance(community, str)
         except KeyError:
             logging.warning(f'missing snmp credentials {asset}')
-            raise IgnoreCheckException
+            raise IgnoreResultException
 
     if version == '2c':
         cl = Snmp(
@@ -85,7 +85,7 @@ async def snmpquery(
             cred = snmpv3_credentials(asset_config)
         except Exception as e:
             logging.warning(f'invalid snmpv3 credentials {asset}: {e}')
-            raise IgnoreCheckException
+            raise IgnoreResultException
         try:
             cl = SnmpV3(
                 host=address,
@@ -93,7 +93,7 @@ async def snmpquery(
             )
         except Exception as e:
             logging.warning(f'invalid snmpv3 client config {asset}: {e}')
-            raise IgnoreCheckException
+            raise IgnoreResultException
     elif version == '1':
         cl = SnmpV1(
             host=address,
@@ -101,14 +101,15 @@ async def snmpquery(
         )
     else:
         logging.warning(f'unsupported snmp version {asset}: {version}')
-        raise IgnoreCheckException
+        raise IgnoreResultException
 
     try:
         await cl.connect()
     except SnmpNoConnection as e:
         raise CheckException(f'unable to connect')
     except SnmpNoAuthParams:
-        raise CheckException(f'unable to connect: failed to set auth params')
+        logging.warning(f'unable to connect: failed to set auth params')
+        raise IgnoreResultException()
     else:
         results = {}
         try:
