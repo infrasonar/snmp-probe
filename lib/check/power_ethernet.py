@@ -5,7 +5,6 @@ from ..snmpquery import snmpquery
 QUERIES = (
     MIB_INDEX['POWER-ETHERNET-MIB']['pethMainPseObjects'],
     MIB_INDEX['POWER-ETHERNET-MIB']['pethPsePortEntry'],
-
 )
 
 

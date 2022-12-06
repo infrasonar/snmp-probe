@@ -13,5 +13,4 @@ async def check_device(
         check_config: dict):
 
     state_data = await snmpquery(asset, asset_config, check_config, QUERIES)
-
     return state_data
