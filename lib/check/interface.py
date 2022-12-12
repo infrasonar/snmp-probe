@@ -43,6 +43,18 @@ ifHighSpeed OBJECT-TYPE
 '''
 
 
+_64_BIT_COUNTERS = (
+    'HCInOctets',
+    'HCInUcastPkts',
+    'HCInMulticastPkts',
+    'HCInBroadcastPkts',
+    'HCOutOctets',
+    'HCOutUcastPkts',
+    'HCOutMulticastPkts',
+    'HCOutBroadcastPkts',
+)
+
+
 async def check_interface(
         asset: Asset,
         asset_config: dict,
@@ -65,10 +77,10 @@ async def check_interface(
         except KeyError:
             continue
 
-        if 'HCInOctets' in item:
-            item['InOctets'] = item.pop('HCInOctets')
-        if 'HCOutOctets' in item:
-            item['OutOctets'] = item.pop('HCOutOctets')
+        for _64_bit_name in _64_BIT_COUNTERS:
+            if _64_bit_name in item:
+                _32_bit_name = _64_bit_name[2:]
+                item[_32_bit_name] = item.pop(_64_bit_name)
 
         if 'Speed' in item and 'HighSpeed' in item:
             # max value for this metric, shown if value is overloading
