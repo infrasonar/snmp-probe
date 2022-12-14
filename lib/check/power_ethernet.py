@@ -3,7 +3,7 @@ from libprobe.asset import Asset
 from ..snmpquery import snmpquery
 
 QUERIES = (
-    MIB_INDEX['POWER-ETHERNET-MIB']['pethMainPseObjects'],
+    MIB_INDEX['POWER-ETHERNET-MIB']['pethMainPseEntry'],
     MIB_INDEX['POWER-ETHERNET-MIB']['pethPsePortEntry'],
 )
 
