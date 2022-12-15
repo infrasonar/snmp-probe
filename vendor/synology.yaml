@@ -1,0 +1,16 @@
+name: snmp-synology
+checks:
+  - name: system
+    mib: SYNOLOGY-SYSTEM-MIB
+    types:
+      - synoSystem
+      - fan
+      - dsmInfo
+  - name: disk
+    mib: SYNOLOGY-DISK-MIB
+    types:
+      - diskEntry
+  - name: raid
+    mib: SYNOLOGY-RAID-MIB
+    types:
+      - raidEntry
