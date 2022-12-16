@@ -1,4 +1,5 @@
 import ipaddress
+from .exceptions import ParseKeyException
 
 
 def addr_ipv4(octets):
@@ -59,7 +60,7 @@ def ip_mib_address(key, item):
         local_typ_name, local_typ_func = ADDRESS_TP[local_typ]
         local_addr = local_typ_func(key[1:])
     except Exception:
-        raise Exception(f'Unable to derive address info from oid-part {key}')
+        raise ParseKeyException
 
     item['AddrType'] = local_typ_name
     item['Addr'] = local_addr
