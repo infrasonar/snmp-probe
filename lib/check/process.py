@@ -1,6 +1,9 @@
+import logging
 from asyncsnmplib.mib.mib_index import MIB_INDEX
 from collections import Counter
 from libprobe.asset import Asset
+from libprobe.exceptions import IncompleteResultException
+from libprobe.severity import Severity
 from ..snmpquery import snmpquery
 
 QUERIES = (
@@ -17,14 +20,24 @@ async def check_process(
 
     counts = Counter()
     itms = state.pop('hrSWRun', [])
+    items = []
     for item in itms:
-        run_name = item.get('Name')
-        if run_name is not None:
-            item['name'] = \
-                f'{run_name}#{counts[run_name]}' \
-                if counts[run_name] > 0 else run_name
-            counts[run_name] += 1
+        name = item.get('Name')
+        path = item.get('Path')
+        if None in (name, path):
+            logging.warning(
+                f'Process is missing a required metric: {item}; {asset}')
+            continue
+        item['name'] = f'{name}#{counts[name]}' if counts[name] > 0 else name
+        counts[name] += 1
+        items.append(item)
 
-    return {
-        'process': itms,
-    }
+    result = {'process': items}
+
+    if len(items) != len(itms):
+        raise IncompleteResultException(
+            msg='At least one process',
+            result=result,
+            severity=Severity.LOW)
+
+    return result
