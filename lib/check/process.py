@@ -23,8 +23,7 @@ async def check_process(
     items = []
     for item in itms:
         name = item.get('Name')
-        path = item.get('Path')
-        if None in (name, path):
+        if None in (name, item.get('Path')):
             logging.warning(
                 f'Process is missing a required metric: {item}; {asset}')
             continue
