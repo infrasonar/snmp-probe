@@ -35,7 +35,10 @@ async def check_process(
 
     if len(items) != len(itms):
         raise IncompleteResultException(
-            msg='At least one process',
+            msg=(
+                'At least one process is missing a required '
+                'Name or Path property; '
+                'View the SNMP probe log for more info'),
             result=result,
             severity=Severity.LOW)
 
