@@ -23,7 +23,13 @@ async def check_process(
     items = []
     for item in itms:
         name = item.get('Name')
-        if None in (name, item.get('Path')):
+        if None in (name,
+                    item.get('Index'),
+                    item.get('ID'),
+                    item.get('Path'),
+                    item.get('Parameters'),
+                    item.get('Type'),
+                    item.get('Status')):
             logging.warning(
                 f'Process is missing a required metric: {item}; {asset}')
             continue
@@ -36,8 +42,7 @@ async def check_process(
     if len(items) != len(itms):
         raise IncompleteResultException(
             msg=(
-                'At least one process is missing a required '
-                'Name or Path property; '
+                'At least one process is missing a required property; '
                 'View the SNMP probe log for more info'),
             result=result,
             severity=Severity.LOW)
