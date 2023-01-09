@@ -1,2 +1,2 @@
 asyncsnmplib==0.1.4
-libprobe==0.2.21
+libprobe==0.2.23
