@@ -64,7 +64,7 @@ async def check_interface(
 
     counts = Counter()
     itms = state_data.get('if', [])
-    if_x_entry = {i['name']: i for i in state_data.pop('ifX', [])}
+    if_x_entry = {i.pop('name'): i for i in state_data.pop('ifX', [])}
     for item in itms:
         key = item['name']
         name = item['Descr']
