@@ -13,6 +13,7 @@ from lib.check.storage import check_storage
 from lib.check.system import check_system
 from lib.check.tcp_connection import check_tcp_connection
 from lib.check.tcp_listener import check_tcp_listener
+from lib.check.ucd import check_ucd
 from lib.version import __version__ as version
 
 
@@ -32,6 +33,7 @@ if __name__ == '__main__':
         'system': check_system,
         'tcpConnection': check_tcp_connection,
         'tcpListener': check_tcp_listener,
+        'ucd': check_ucd,
     }
 
     probe = Probe("snmp", version, checks)
