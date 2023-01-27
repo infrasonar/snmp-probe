@@ -13,7 +13,8 @@
         "enterprises",
         "MODULE-IDENTITY",
         "OBJECT-TYPE",
-        "Integer32"
+        "Integer32",
+        "Counter64"
       ]
     ]
   ],
@@ -111,6 +112,17 @@
     "value": [
       "raidEntry",
       5
+    ]
+  },
+  "raidHotspareCnt": {
+    "tp": "OBJECT-TYPE",
+    "syntax": {
+      "tp": "Integer32"
+    },
+    "index": null,
+    "value": [
+      "raidEntry",
+      6
     ]
   },
   "raidConformance": {

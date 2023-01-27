@@ -124,6 +124,83 @@
       6
     ]
   },
+  "diskRole": {
+    "tp": "OBJECT-TYPE",
+    "syntax": {
+      "tp": "OCTET STRING"
+    },
+    "index": null,
+    "value": [
+      "diskEntry",
+      7
+    ]
+  },
+  "diskRetry": {
+    "tp": "OBJECT-TYPE",
+    "syntax": {
+      "tp": "Integer32"
+    },
+    "index": null,
+    "value": [
+      "diskEntry",
+      8
+    ]
+  },
+  "diskBadSector": {
+    "tp": "OBJECT-TYPE",
+    "syntax": {
+      "tp": "Integer32"
+    },
+    "index": null,
+    "value": [
+      "diskEntry",
+      9
+    ]
+  },
+  "diskIdentifyFail": {
+    "tp": "OBJECT-TYPE",
+    "syntax": {
+      "tp": "Integer32"
+    },
+    "index": null,
+    "value": [
+      "diskEntry",
+      10
+    ]
+  },
+  "diskRemainLife": {
+    "tp": "OBJECT-TYPE",
+    "syntax": {
+      "tp": "Integer32"
+    },
+    "index": null,
+    "value": [
+      "diskEntry",
+      11
+    ]
+  },
+  "diskName": {
+    "tp": "OBJECT-TYPE",
+    "syntax": {
+      "tp": "OCTET STRING"
+    },
+    "index": null,
+    "value": [
+      "diskEntry",
+      12
+    ]
+  },
+  "diskHealthStatus": {
+    "tp": "OBJECT-TYPE",
+    "syntax": {
+      "tp": "Integer32"
+    },
+    "index": null,
+    "value": [
+      "diskEntry",
+      13
+    ]
+  },
   "diskConformance": {
     "tp": "OBJECT IDENTIFIER",
     "value": [

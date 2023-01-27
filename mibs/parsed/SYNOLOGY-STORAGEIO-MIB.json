@@ -198,6 +198,17 @@
       13
     ]
   },
+  "storageIODeviceSerial": {
+    "tp": "OBJECT-TYPE",
+    "syntax": {
+      "tp": "DisplayString"
+    },
+    "index": null,
+    "value": [
+      "storageIOEntry",
+      14
+    ]
+  },
   "storageIOConformance": {
     "tp": "OBJECT IDENTIFIER",
     "value": [

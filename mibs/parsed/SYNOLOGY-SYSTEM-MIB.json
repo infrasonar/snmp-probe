@@ -144,11 +144,22 @@
       4
     ]
   },
+  "controllerNumber": {
+    "tp": "OBJECT-TYPE",
+    "syntax": {
+      "tp": "Integer32"
+    },
+    "index": null,
+    "value": [
+      "synoSystem",
+      6
+    ]
+  },
   "systemConformance": {
     "tp": "OBJECT IDENTIFIER",
     "value": [
       "synoSystem",
-      6
+      7
     ]
   },
   "systemCompliances": {

@@ -245,6 +245,28 @@
       17
     ]
   },
+  "iSCSILUNDiskLatencyAvg": {
+    "tp": "OBJECT-TYPE",
+    "syntax": {
+      "tp": "Integer32"
+    },
+    "index": null,
+    "value": [
+      "iSCSILUNEntry",
+      18
+    ]
+  },
+  "iSCSILUNThinProvisionVolFreeMBs": {
+    "tp": "OBJECT-TYPE",
+    "syntax": {
+      "tp": "Integer32"
+    },
+    "index": null,
+    "value": [
+      "iSCSILUNEntry",
+      19
+    ]
+  },
   "synologyiSCSILUNConformance": {
     "tp": "OBJECT IDENTIFIER",
     "value": [

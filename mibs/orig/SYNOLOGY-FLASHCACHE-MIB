@@ -12,8 +12,8 @@ flashCache MODULE-IDENTITY
     LAST-UPDATED "201407170000Z"
     ORGANIZATION "www.synology.com"
     CONTACT-INFO
-         "postal:   Awon Lai
-          email:    awonlai@synology.com"
+         "Synology Inc.
+          Email: snmp@synology.com"
     DESCRIPTION
         "Characteristics of the flash cache information"
     REVISION     "201407170000Z"

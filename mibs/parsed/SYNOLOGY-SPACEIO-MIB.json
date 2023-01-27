@@ -198,6 +198,17 @@
       13
     ]
   },
+  "spaceUUID": {
+    "tp": "OBJECT-TYPE",
+    "syntax": {
+      "tp": "DisplayString"
+    },
+    "index": null,
+    "value": [
+      "spaceIOEntry",
+      14
+    ]
+  },
   "spaceIOConformance": {
     "tp": "OBJECT IDENTIFIER",
     "value": [
