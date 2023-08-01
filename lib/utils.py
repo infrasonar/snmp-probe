@@ -44,7 +44,7 @@ def addr_dns(octets):
 
 
 ADDRESS_TP = {
-    0: ('unknown', lambda v: ''),
+    0: ('unknown', lambda v: None),
     1: ('ipv4', addr_ipv4),
     2: ('ipv6', addr_ipv6),
     3: ('ipv4z', addr_ipv4z),
@@ -54,16 +54,19 @@ ADDRESS_TP = {
 
 
 def ip_mib_address(key, item):
-    key = tuple(map(int, key.split('.')))
-    try:
-        local_typ = key[0]
-        local_typ_name, local_typ_func = ADDRESS_TP[local_typ]
-        local_addr = local_typ_func(key[1:])
-    except Exception:
-        raise ParseKeyException
+    if 'Addr' not in item:
+        # some devices return ipAddressAddr as a value so we don't have to
+        # derive it from the key
+        key = tuple(map(int, key.split('.')))
+        try:
+            local_typ = key[0]
+            local_typ_name, local_typ_func = ADDRESS_TP[local_typ]
+            local_addr = local_typ_func(key[1:])
+        except Exception:
+            raise ParseKeyException
 
-    item['AddrType'] = local_typ_name
-    item['Addr'] = local_addr
+        item['AddrType'] = local_typ_name
+        item['Addr'] = local_addr
 
     # when value is 0.0 or 1.1 ignore
     # some devices don't follow mib's syntax and return None
