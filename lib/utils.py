@@ -55,7 +55,7 @@ ADDRESS_TP = {
 
 def ip_mib_address(key, item):
     if 'Addr' not in item:
-        # some devices return ipAddressType, ipAddressAddr as values so we
+        # some devices return ipAddressAddrType, ipAddressAddr as values so we
         # don't have to derive these from the key
         key = tuple(map(int, key.split('.')))
         try:
