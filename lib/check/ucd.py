@@ -5,6 +5,7 @@ from ..snmpquery import snmpquery
 
 QUERIES = (
     MIB_INDEX['UCD-SNMP-MIB']['memory'],
+    MIB_INDEX['UCD-SNMP-MIB']['dskEntry'],
     MIB_INDEX['UCD-DISKIO-MIB']['diskIOEntry'],
 )
 
@@ -66,6 +67,13 @@ async def check_ucd(
 
     counts = Counter()
     for item in state_data.get('diskIO', []):
+        name = item['Device']
+        idx = counts[name]
+        counts[name] += 1
+        item['name'] = f'{name}_{idx}' if idx else name
+
+    counts = Counter()
+    for item in state_data.get('dsk', []):
         name = item['Device']
         idx = counts[name]
         counts[name] += 1
