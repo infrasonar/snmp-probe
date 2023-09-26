@@ -21,6 +21,12 @@ class InvalidSnmpVersionException(SnmpException):
     message = 'Invalid SNMP version.'
 
 
+class ParseResultException(SnmpException):
+    def __init__(self, message: str):
+        super().__init__(message)
+        self.message = message
+
+
 def snmpv3_credentials(asset_config: dict):
     try:
         user_name = asset_config['username']
@@ -134,8 +140,9 @@ async def snmpquery(
                     name, result = on_result(oid, result)
                 except Exception as e:
                     msg = str(e) or type(e).__name__
-                    raise Exception(
-                        f'Failed to parse result. Exception: {msg}')
+                    raise ParseResultException(
+                        f'Failed to parse result. Exception: {msg}'
+                    )
                 else:
                     results[name] = result
         except Exception:
