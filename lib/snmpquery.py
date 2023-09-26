@@ -122,7 +122,7 @@ async def snmpquery(
         )
     else:
         logging.warning(f'unsupported snmp version {asset}: {version}')
-        raise InvalidClientConfigException
+        raise InvalidSnmpVersionException
 
     try:
         await cl.connect()
