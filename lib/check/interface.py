@@ -160,9 +160,12 @@ async def check_interface(
         try:
             name = item['Descr']
         except KeyError:
+            suggest = (
+                '; You might want to disable the option: '
+                'Include all interfaces'
+            ) if include_all else ''
             raise CheckException(
-                'Missing required ifDesc OID for creating an interface name; '
-                'Consider to disable the option  ')
+                f'Missing ifDesc OID for creating an interface name{suggest}')
         if isinstance(name, str) and (
             any(name.startswith(e) for e in ExcludedIfDescStartsWith) or
                 any(e in name for e in ExcludedIfDescContains)):
