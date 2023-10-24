@@ -182,7 +182,7 @@ async def check_interface(
         try:
             item.update(if_x_entry[key])
         except KeyError:
-            continue
+            continue  # no 64 bit counter, skip code below
 
         for _64_bit_name in _64_BIT_COUNTERS:
             if _64_bit_name in item:
