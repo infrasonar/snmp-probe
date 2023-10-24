@@ -142,6 +142,8 @@ async def check_interface(
         asset_config: dict,
         check_config: dict):
 
+    include_all = check_config.get('includeAllInterfaces', False)
+
     state_data = await snmpquery(asset, asset_config, check_config, QUERIES)
 
     counts = Counter()
@@ -149,7 +151,7 @@ async def check_interface(
     if_x_entry = {i.pop('name'): i for i in state_data.pop('ifX', [])}
     for item in itms:
         key = item['name']
-        if item.get('Type') in ExcludedIfTypes:
+        if not include_all and item.get('Type') in ExcludedIfTypes:
             continue
         mac = item.get('PhysAddress')
         if isinstance(mac, str) and any(
