@@ -153,10 +153,12 @@ async def check_interface(
         key = item['name']
         if not include_all and item.get('Type') in ExcludedIfTypes:
             continue
+
         mac = item.get('PhysAddress')
         if not include_all and isinstance(mac, str) and any(
                 mac.startswith(e) for e in ReservedAddresses):
             continue
+
         try:
             name = item['Descr']
             assert isinstance(name, str)
@@ -167,10 +169,12 @@ async def check_interface(
             ) if include_all else ''
             raise CheckException(
                 f'Missing ifDesc OID for creating an interface name{suggest}')
+
         if not include_all and (
             any(name.startswith(e) for e in ExcludedIfDescStartsWith) or
                 any(e in name for e in ExcludedIfDescContains)):
             continue
+
         idx = counts[name]
         counts[name] += 1
         item['name'] = f'{name}_{idx}' if idx else name
