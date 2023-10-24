@@ -158,7 +158,9 @@ async def check_interface(
         try:
             name = item['Descr']
         except KeyError:
-            raise CheckException('Missing required ifDesc OID for interface')
+            raise CheckException(
+                'Missing required ifDesc OID for creating an interface name; '
+                'Consider to disable the option  ')
         if isinstance(name, str) and (
             any(name.startswith(e) for e in ExcludedIfDescStartsWith) or
                 any(e in name for e in ExcludedIfDescContains)):
