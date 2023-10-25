@@ -63,7 +63,6 @@ ExcludedIfTypes = (
 
 ExcludedIfDescStartsWith = (
     'veth',
-    'lo',
     'nu',
     'vnet',
     'virbr',
@@ -148,6 +147,7 @@ async def check_interface(
 
     counts = Counter()
     itms = state_data.get('if', [])
+    items = []
     if_x_entry = {i.pop('name'): i for i in state_data.pop('ifX', [])}
     for item in itms:
         key = item['name']
@@ -178,6 +178,8 @@ async def check_interface(
         idx = counts[name]
         counts[name] += 1
         item['name'] = f'{name}_{idx}' if idx else name
+
+        items.append(item)
 
         try:
             item.update(if_x_entry[key])
