@@ -199,5 +199,5 @@ async def check_interface(
                 item['Speed'] = item['HighSpeed'] * 1000000
 
     return {
-        'interface': itms
+        'interface': items
     }
