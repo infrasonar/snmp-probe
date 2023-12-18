@@ -1,3 +1,4 @@
+import re
 from asyncsnmplib.mib.mib_index import MIB_INDEX
 from collections import Counter
 from libprobe.asset import Asset
@@ -75,6 +76,10 @@ ExcludedIfDescContains = (
     'cplane'
 )
 
+ExcludeIfMatch = (
+    re.compile('^docker[0-9a-f]{7}$'),
+)
+
 # Address and prefixes matching these prefixes will be absolutely filtered
 ReservedAddresses = (
     '00:00:01:00:00:01',    # Problematic XEROX CORPORATION MACs
@@ -136,6 +141,13 @@ ReservedAddresses = (
 )
 
 
+def should_exclude_name(name: str) -> bool:
+    return (
+        any(name.startswith(e) for e in ExcludedIfDescStartsWith) or
+        any(e in name for e in ExcludedIfDescContains) or
+        any(r.match(name) for r in ExcludeIfMatch))
+
+
 async def check_interface(
         asset: Asset,
         asset_config: dict,
@@ -170,9 +182,7 @@ async def check_interface(
             raise CheckException(
                 f'Missing ifDesc OID for creating an interface name{suggest}')
 
-        if not include_all and (
-            any(name.startswith(e) for e in ExcludedIfDescStartsWith) or
-                any(e in name for e in ExcludedIfDescContains)):
+        if not include_all and should_exclude_name(name):
             continue
 
         idx = counts[name]
