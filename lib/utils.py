@@ -54,17 +54,22 @@ ADDRESS_TP = {
 
 
 def ip_mib_address(key, item):
-    if 'Addr' not in item:
-        # some devices return ipAddressAddrType and ipAddressAddr as
-        # values so we don't have to derive these from the key
-        key = tuple(map(int, key.split('.')))
-        try:
-            local_typ = key[0]
-            local_typ_name, local_typ_func = ADDRESS_TP[local_typ]
-            local_addr = local_typ_func(key[1:])
-        except Exception:
+    # some devices return ipAddressAddrType and ipAddressAddr as
+    # values, these may be imporperly formatted or null,
+    # so we derive these from the key like we do with the other checks
+    # (tcpConnections, tcpListeners)
+    key = tuple(map(int, key.split('.')))
+    try:
+        local_typ = key[0]
+        local_typ_name, local_typ_func = ADDRESS_TP[local_typ]
+        local_addr = local_typ_func(key[1:])
+    except Exception:
+        if not (
+            isinstance(item.get('Addr'), str) and
+            isinstance(item.get('AddrType'), str)
+        ):
             raise ParseKeyException
-
+    else:
         item['AddrType'] = local_typ_name
         item['Addr'] = local_addr
 
