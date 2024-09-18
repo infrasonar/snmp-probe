@@ -15,7 +15,7 @@ async def check_system(
         check_config: dict):
 
     snmp = get_snmp_client(asset, asset_config, check_config)
-    state = await snmpquery(snmp, QUERIES)
+    state = await snmpquery(snmp, QUERIES, True)
     try:
         assert len(state['hrSystem'])
     except Exception:

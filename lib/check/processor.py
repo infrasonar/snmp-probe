@@ -15,7 +15,7 @@ async def check_processor(
         check_config: dict):
 
     snmp = get_snmp_client(asset, asset_config, check_config)
-    state_data = await snmpquery(snmp, QUERIES)
+    state_data = await snmpquery(snmp, QUERIES, True)
 
     hrProcessor = state_data.get('hrProcessor')
     if not hrProcessor:
