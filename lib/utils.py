@@ -81,6 +81,7 @@ def ip_mib_address(key, item):
         'internet',  # oid 1.1
         None,
     ):
+        prefix_key = None
         n = 10  # length of 1.3.6.1.2.1.4.32.1.5 IP-MIB::ipAddressPrefixOrigin
         try:
             prefix_key = tuple(
