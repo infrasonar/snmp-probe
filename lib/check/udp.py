@@ -6,6 +6,11 @@ QUERIES = (
     MIB_INDEX['UDP-MIB']['udp'],
 )
 
+_64_BIT_COUNTERS = (
+    'HCInDatagrams',
+    'HCOutDatagrams',
+)
+
 
 async def check_udp(
         asset: Asset,
@@ -13,4 +18,10 @@ async def check_udp(
         check_config: dict):
 
     state = await snmpquery(asset, asset_config, check_config, QUERIES)
+    for item in state.get('udp', []):
+        for _64_bit_name in _64_BIT_COUNTERS:
+            if _64_bit_name in item:
+                _32_bit_name = _64_bit_name[2:]
+                item[_32_bit_name] = item.pop(_64_bit_name)
+
     return state
