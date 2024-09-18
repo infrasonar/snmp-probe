@@ -3,6 +3,7 @@ from asyncsnmplib.mib.mib_index import MIB_INDEX
 from collections import Counter
 from libprobe.asset import Asset
 from libprobe.exceptions import CheckException
+from ..snmpclient import get_snmp_client
 from ..snmpquery import snmpquery
 
 QUERIES = (
@@ -155,7 +156,8 @@ async def check_interface(
 
     include_all = check_config.get('includeAllInterfaces', False)
 
-    state_data = await snmpquery(asset, asset_config, check_config, QUERIES)
+    snmp = get_snmp_client(asset, asset_config, check_config)
+    state_data = await snmpquery(snmp, QUERIES)
 
     counts = Counter()
     itms = state_data.get('if', [])
