@@ -29,7 +29,7 @@ async def check_ucd(
         check_config: dict):
 
     snmp = get_snmp_client(asset, asset_config, check_config)
-    state_data = await snmpquery(snmp, QUERIES)
+    state_data = await snmpquery(snmp, QUERIES, True)
 
     for item in state_data.get('memory', []):
         for metric in _TO_BYTES:

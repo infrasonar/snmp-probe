@@ -17,7 +17,7 @@ async def check_ip_address(
         check_config: dict):
 
     snmp = get_snmp_client(asset, asset_config, check_config)
-    state = await snmpquery(snmp, QUERIES)
+    state = await snmpquery(snmp, QUERIES, True)
 
     rows = state['ipAddress']
     result = []

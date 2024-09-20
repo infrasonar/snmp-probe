@@ -15,7 +15,7 @@ async def check_storage(
         check_config: dict):
 
     snmp = get_snmp_client(asset, asset_config, check_config)
-    state_data = await snmpquery(snmp, QUERIES)
+    state_data = await snmpquery(snmp, QUERIES, True)
 
     fs_types = {item.get('StorageIndex'): item.get('hrFSType')
                 for item in state_data.pop('hrFS', [])}

@@ -157,7 +157,7 @@ async def check_interface(
     include_all = check_config.get('includeAllInterfaces', False)
 
     snmp = get_snmp_client(asset, asset_config, check_config)
-    state_data = await snmpquery(snmp, QUERIES)
+    state_data = await snmpquery(snmp, QUERIES, True)
 
     counts = Counter()
     itms = state_data.get('if', [])

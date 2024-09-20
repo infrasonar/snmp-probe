@@ -19,7 +19,7 @@ async def check_tcp(
         check_config: dict):
 
     snmp = get_snmp_client(asset, asset_config, check_config)
-    state = await snmpquery(snmp, QUERIES)
+    state = await snmpquery(snmp, QUERIES, True)
     for item in state.get('tcp', []):
         for _64_bit_name in _64_BIT_COUNTERS:
             if _64_bit_name in item:
