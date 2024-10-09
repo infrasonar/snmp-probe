@@ -17,7 +17,7 @@ def get_snmp_client(
         asset_config: dict,
         check_config: dict) -> Union[Snmp, SnmpV1, SnmpV3]:
     address = check_config.get('address')
-    if address is None:
+    if not address:
         address = asset.name
 
     version = asset_config.get('version', '2c')
