@@ -1,5 +1,25 @@
 import ipaddress
+import time
+from typing import Union
 from .exceptions import ParseKeyException
+
+
+class InterfaceLookup:
+    _lk = {}
+    _MAX_AGE = 900
+
+    @classmethod
+    def get(cls, asset_id: int) -> Union[dict[int, str], None]:
+        ts, data = cls._lk.get(asset_id, (None, None))
+        if ts is None or time.time() - ts > cls._MAX_AGE:
+            return
+        return data
+
+    @classmethod
+    def set(cls, asset_id: int, rows: list) -> dict[int, str]:
+        data = {i['Index']: i for i in rows}
+        cls._lk[asset_id] = (time.time(), data)
+        return data
 
 
 def addr_ipv4(octets):
