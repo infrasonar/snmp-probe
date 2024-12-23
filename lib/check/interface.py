@@ -5,6 +5,7 @@ from libprobe.asset import Asset
 from libprobe.exceptions import CheckException
 from ..snmpclient import get_snmp_client
 from ..snmpquery import snmpquery
+from ..utils import InterfaceLookup
 
 QUERIES = (
     MIB_INDEX['IF-MIB']['ifEntry'],
@@ -161,6 +162,10 @@ async def check_interface(
 
     counts = Counter()
     itms = state_data.get('if', [])
+
+    # lookup is used by lldp check
+    InterfaceLookup.set(asset.id, itms)
+
     items = []
     if_x_entry = {i.pop('name'): i for i in state_data.pop('ifX', [])}
     for item in itms:

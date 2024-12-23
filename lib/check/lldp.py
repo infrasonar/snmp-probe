@@ -2,6 +2,8 @@ from asyncsnmplib.mib.mib_index import MIB_INDEX
 from libprobe.asset import Asset
 from ..snmpclient import get_snmp_client
 from ..snmpquery import snmpquery
+from ..utils import InterfaceLookup
+
 
 QUERIES = (
     MIB_INDEX['IF-MIB']['ifEntry'],
@@ -16,18 +18,25 @@ async def check_lldp(
         check_config: dict):
 
     snmp = get_snmp_client(asset, asset_config, check_config)
-    state_data = await snmpquery(snmp, QUERIES, True)
+
+    if_entry = InterfaceLookup.get(asset.id)
+    if if_entry is None:
+        state_data = await snmpquery(snmp, QUERIES, True)
+        if_entry = InterfaceLookup.set(asset.id, state_data.get('if', []))
+    else:
+        state_data = await snmpquery(snmp, QUERIES[1:], True)
 
     itms = state_data.get('dot1dStpPort', [])
-    base_port_entry = {i.pop('name'): i for i in state_data.pop('dot1dBasePort', [])}
-    if_entry = {i.pop('name'): i for i in state_data.pop('if', [])}
+    base_port_entry = {
+        i.pop('name'): i
+        for i in state_data.get('dot1dBasePort', [])}
     for item in itms:
         key = item['name']
 
         try:
             base_port_item = base_port_entry[key]
             if_item = if_entry[base_port_item['IfIndex']]
-            item['interface'] = if_item['Descr']
+            item['Interface'] = if_item['Descr']
         except Exception:
             continue
 
