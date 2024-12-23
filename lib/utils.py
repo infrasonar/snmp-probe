@@ -58,6 +58,7 @@ def ip_mib_address(key, item):
     # values, these may be imporperly formatted or null,
     # so we derive these from the key like we do with the other checks
     # (tcpConnections, tcpListeners)
+    orig_key = key
     key = tuple(map(int, key.split('.')))
     try:
         local_typ = key[0]
@@ -68,7 +69,7 @@ def ip_mib_address(key, item):
             isinstance(item.get('Addr'), str) and
             isinstance(item.get('AddrType'), str)
         ):
-            raise ParseKeyException
+            raise ParseKeyException(orig_key)
     else:
         item['AddrType'] = local_typ_name
         item['Addr'] = local_addr

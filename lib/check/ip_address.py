@@ -21,14 +21,16 @@ async def check_ip_address(
 
     rows = state['ipAddress']
     result = []
+    missing = []
     for item in rows:
         try:
             result.append(ip_mib_address(item['name'], item))
-        except ParseKeyException:
-            pass
+        except ParseKeyException as e:
+            missing.append(str(e))
 
     state['ipAddress'] = result
-    if len(result) < len(rows):
-        msg = f'Unable to derive address info'
+    if missing:
+        oids = ', '.join(missing)
+        msg = f'Unable to derive address info from oid(s): {oids}'
         raise IncompleteResultException(msg, state)
     return state
