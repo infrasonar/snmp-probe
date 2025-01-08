@@ -87,7 +87,7 @@ ExcludedIfDescContains = (
 # Interface names with a match will be excluded unless "include all".
 ExcludeIfMatch = (
     re.compile('^docker[0-9a-f]{7}$'),
-    re.compile('^tap[0-9]+\.[0-9]+$'),
+    re.compile(r'^tap[0-9]+\.[0-9]+$'),
 )
 
 # Address and prefixes matching these prefixes will filtered unless include all
