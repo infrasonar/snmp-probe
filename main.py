@@ -6,6 +6,7 @@ from lib.check.interface import check_interface
 from lib.check.ip import check_ip
 from lib.check.ip_address import check_ip_address
 from lib.check.ip_forward import check_ip_forward
+from lib.check.lldp import check_lldp
 from lib.check.power_ethernet import check_power_ethernet
 from lib.check.process import check_process
 from lib.check.processor import check_processor
@@ -29,6 +30,7 @@ if __name__ == '__main__':
         'ip': check_ip,
         'ipAddress': check_ip_address,
         'ipForward': check_ip_forward,
+        'lldp': check_lldp,
         'powerEthernet': check_power_ethernet,
         'process': check_process,
         'processor': check_processor,
