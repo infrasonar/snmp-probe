@@ -58,12 +58,16 @@ _64_BIT_COUNTERS = (
     'HCOutBroadcastPkts',
 )
 
+# Interfaces where the type is one ot the following will be excluded unless
+# "include all".
 ExcludedIfTypes = (
     'ieee80211',
     'l3ipvlan',
     'l2vlan',
 )
 
+# Interfaces where the description starts with one of these words will be
+# excluded unless "include all".
 ExcludedIfDescStartsWith = (
     'veth',
     'nu',
@@ -71,6 +75,8 @@ ExcludedIfDescStartsWith = (
     'virbr',
 )
 
+# Interfaces where the description contains one of these words will be
+# excluded unless "include all".
 ExcludedIfDescContains = (
     'vif',
     'stackport',
@@ -78,11 +84,13 @@ ExcludedIfDescContains = (
     'cplane'
 )
 
+# Interface names with a match will be excluded unless "include all".
 ExcludeIfMatch = (
     re.compile('^docker[0-9a-f]{7}$'),
+    re.compile(r'^tap[0-9]+\.[0-9]+$'),
 )
 
-# Address and prefixes matching these prefixes will be absolutely filtered
+# Address and prefixes matching these prefixes will filtered unless include all
 ReservedAddresses = (
     '00:00:01:00:00:01',    # Problematic XEROX CORPORATION MACs
     '00:00:01',             # Cisco ASA virtual MACs
