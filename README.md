@@ -47,12 +47,22 @@ snmp:
     username: alice
     auth:
       # auth is optional; type USM_AUTH_NONE is used when omitted.
-      # supported: USM_AUTH_HMAC96_MD5, USM_AUTH_HMAC96_SHA or USM_AUTH_NONE
+      # supported:
+      #   USM_AUTH_HMAC96_MD5, USM_AUTH_HMAC96_SHA,
+      #   USM_AUTH_HMAC128_SHA224, USM_AUTH_HMAC192_SHA256,
+      #   USM_AUTH_HMAC256_SHA384, USM_AUTH_HMAC384_SHA512 or USM_AUTH_NONE
       type: USM_AUTH_HMAC96_SHA
       password: "my secret password"
     priv:
       # priv is optional; type USM_PRIV_NONE is used when omitted.
-      # supported: USM_PRIV_CBC56_DES, USM_PRIV_CFB128_AES or USM_PRIV_NONE
+      # supported:
+      #   USM_PRIV_CBC56_DES, USM_PRIV_CFB128_AES or USM_PRIV_NONE
       type: USM_PRIV_CFB128_AES
       password: "my secret password"
 ```
+
+
+    'USM_AUTH_HMAC128_SHA224': USM_AUTH_HMAC128_SHA224,
+    'USM_AUTH_HMAC192_SHA256': USM_AUTH_HMAC192_SHA256,
+    'USM_AUTH_HMAC256_SHA384': USM_AUTH_HMAC256_SHA384,
+    'USM_AUTH_HMAC384_SHA512': USM_AUTH_HMAC384_SHA512,
