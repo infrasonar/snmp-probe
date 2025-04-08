@@ -5,9 +5,9 @@ from ..snmpclient import get_snmp_client
 from ..snmpquery import snmpquery
 
 QUERIES = (
-    MIB_INDEX['UCD-SNMP-MIB']['memory'],
-    MIB_INDEX['UCD-SNMP-MIB']['dskEntry'],
-    MIB_INDEX['UCD-DISKIO-MIB']['diskIOEntry'],
+    (MIB_INDEX['UCD-SNMP-MIB']['memory'], False),
+    (MIB_INDEX['UCD-SNMP-MIB']['dskEntry'], True),
+    (MIB_INDEX['UCD-DISKIO-MIB']['diskIOEntry'], True),
 )
 
 _TO_BYTES = (

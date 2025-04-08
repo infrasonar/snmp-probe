@@ -4,7 +4,7 @@ from ..snmpclient import get_snmp_client
 from ..snmpquery import snmpquery
 
 QUERIES = (
-    MIB_INDEX['IP-FORWARD-MIB']['ipForwardEntry'],
+    (MIB_INDEX['IP-FORWARD-MIB']['ipForwardEntry'], True),
 )
 
 

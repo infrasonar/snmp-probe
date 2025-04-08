@@ -5,7 +5,7 @@ from ..snmpquery import snmpquery
 from ..utils import tcp_mib_connection
 
 QUERIES = (
-    MIB_INDEX['TCP-MIB']['tcpConnectionEntry'],
+    (MIB_INDEX['TCP-MIB']['tcpConnectionEntry'], True),
 )
 
 

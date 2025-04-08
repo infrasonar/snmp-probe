@@ -5,7 +5,7 @@ from ..snmpclient import get_snmp_client
 from ..snmpquery import snmpquery
 
 QUERIES = (
-    MIB_INDEX['HOST-RESOURCES-MIB']['hrSystem'],
+    (MIB_INDEX['HOST-RESOURCES-MIB']['hrSystem'], False),
 )
 
 

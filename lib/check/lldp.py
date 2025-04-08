@@ -6,9 +6,9 @@ from ..utils import InterfaceLookup
 
 
 QUERIES = (
-    MIB_INDEX['IF-MIB']['ifEntry'],
-    MIB_INDEX['BRIDGE-MIB']['dot1dStpPortEntry'],
-    MIB_INDEX['BRIDGE-MIB']['dot1dBasePortEntry']
+    (MIB_INDEX['IF-MIB']['ifEntry'], True),
+    (MIB_INDEX['BRIDGE-MIB']['dot1dStpPortEntry'], True),
+    (MIB_INDEX['BRIDGE-MIB']['dot1dBasePortEntry'], True),
 )
 
 

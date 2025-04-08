@@ -8,8 +8,8 @@ from ..snmpquery import snmpquery
 from ..utils import InterfaceLookup
 
 QUERIES = (
-    MIB_INDEX['IF-MIB']['ifEntry'],
-    MIB_INDEX['IF-MIB']['ifXEntry'],
+    (MIB_INDEX['IF-MIB']['ifEntry'], True),
+    (MIB_INDEX['IF-MIB']['ifXEntry'], True),
 )
 
 

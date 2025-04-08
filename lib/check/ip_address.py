@@ -7,7 +7,7 @@ from ..snmpquery import snmpquery
 from ..utils import ip_mib_address
 
 QUERIES = (
-    MIB_INDEX['IP-MIB']['ipAddressEntry'],
+    (MIB_INDEX['IP-MIB']['ipAddressEntry'], True),
 )
 
 

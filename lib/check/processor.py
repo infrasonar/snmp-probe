@@ -5,9 +5,8 @@ from ..snmpclient import get_snmp_client
 from ..snmpquery import snmpquery
 
 QUERIES = (
-    MIB_INDEX['HOST-RESOURCES-MIB']['hrProcessorEntry'],
+    (MIB_INDEX['HOST-RESOURCES-MIB']['hrProcessorEntry'], True),
 )
-
 
 async def check_processor(
         asset: Asset,

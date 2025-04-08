@@ -4,8 +4,8 @@ from ..snmpclient import get_snmp_client
 from ..snmpquery import snmpquery
 
 QUERIES = (
-    MIB_INDEX['POWER-ETHERNET-MIB']['pethMainPseEntry'],
-    MIB_INDEX['POWER-ETHERNET-MIB']['pethPsePortEntry'],
+    (MIB_INDEX['POWER-ETHERNET-MIB']['pethMainPseEntry'], True),
+    (MIB_INDEX['POWER-ETHERNET-MIB']['pethPsePortEntry'], True),
 )
 
 

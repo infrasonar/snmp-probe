@@ -4,7 +4,7 @@ from ..snmpclient import get_snmp_client
 from ..snmpquery import snmpquery
 
 QUERIES = (
-    MIB_INDEX['ENTITY-SENSOR-MIB']['entPhySensorEntry'],
+    (MIB_INDEX['ENTITY-SENSOR-MIB']['entPhySensorEntry'], True),
 )
 
 

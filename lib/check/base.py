@@ -4,7 +4,7 @@ from ..snmpclient import get_snmp_client
 from ..snmpquery import snmpquery
 
 QUERIES = (
-    MIB_INDEX['RFC1213-MIB']['system'],
+    (MIB_INDEX['RFC1213-MIB']['system'], False),
 )
 
 
