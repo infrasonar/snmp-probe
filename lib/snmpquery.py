@@ -16,8 +16,9 @@ async def snmpquery(
     Args:
         client:
             Snmp client
-        oids:
-            Tuple of oids to query
+        queries:
+            Tuple of Tuple with oid and is_table to query.
+            Example: (((1, 3, 6, 1, 2, 1, 4, 34, 1), True),)
         strip_metric_prefix (bool, optional):
             Strip metric prefixes i.e. ipAddressOrigin -> Origin
             Defaults to False
