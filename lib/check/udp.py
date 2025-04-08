@@ -4,7 +4,7 @@ from ..snmpclient import get_snmp_client
 from ..snmpquery import snmpquery
 
 QUERIES = (
-    (MIB_INDEX['UDP-MIB']['udp'], True),
+    (MIB_INDEX['UDP-MIB']['udp'], False),
 )
 
 _64_BIT_COUNTERS = (
