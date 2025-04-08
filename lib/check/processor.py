@@ -8,6 +8,7 @@ QUERIES = (
     (MIB_INDEX['HOST-RESOURCES-MIB']['hrProcessorEntry'], True),
 )
 
+
 async def check_processor(
         asset: Asset,
         asset_config: dict,
