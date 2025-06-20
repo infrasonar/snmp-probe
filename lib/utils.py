@@ -24,8 +24,16 @@ class InterfaceLookup:
 
 def addr_ipv4(octets):
     n = octets[0]
-    assert len(octets) == n + 1 == 5
-    return '.'.join(map(str, octets[1:5]))
+    if len(octets) == n + 1 == 5:
+        # IPv4 in format like 192,168,0,0
+        return '.'.join(map(str, octets[1:5]))
+
+    # Assume string format:
+    def _chr(x):
+        assert 46 <= x < 58  # IPv4
+        return chr(x)
+
+    return ''.join(_chr(x) for x in octets[1:n + 1])
 
 
 def addr_ipv4z(octets):
@@ -37,9 +45,17 @@ def addr_ipv4z(octets):
 
 def addr_ipv6(octets):
     n = octets[0]
-    assert len(octets) == n + 1 == 17
-    nr = sum(o * (2 ** ((16 - i - 1) * 8)) for i, o in enumerate(octets[1:17]))
-    return str(ipaddress.IPv6Address(nr))
+    if len(octets) == n + 1 == 17:
+        nr = sum(o * (2 ** ((16 - i - 1) * 8))
+                 for i, o in enumerate(octets[1:17]))
+        return str(ipaddress.IPv6Address(nr))
+
+    # Assume string format:
+    def _chr(x):
+        assert 46 <= x < 96  # IPv6
+        return chr(x)
+
+    return ''.join(_chr(x) for x in octets[1:n + 1])
 
 
 def addr_ipv6z(octets):
