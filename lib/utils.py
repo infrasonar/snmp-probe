@@ -46,7 +46,8 @@ def addr_ipv4z(octets):
 def addr_ipv6(octets):
     n = octets[0]
     if len(octets) == n + 1 == 17:
-        nr = sum(o * (2 ** ((16 - i - 1) * 8)) for i, o in enumerate(octets[1:17]))
+        nr = sum(o * (2 ** ((16 - i - 1) * 8))
+                 for i, o in enumerate(octets[1:17]))
         return str(ipaddress.IPv6Address(nr))
 
     # Assume string format:
