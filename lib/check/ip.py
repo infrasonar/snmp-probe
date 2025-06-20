@@ -27,7 +27,7 @@ async def check_ip(
         assert len(item) > 1
     except Exception:
         raise CheckException(
-            'SNMP is connected, but this device does not provide IP '
+            'SNMP is connected, but this device does not provide general IP '
             'information. You may want to disable this check.')
 
     return state

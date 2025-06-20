@@ -37,7 +37,7 @@ async def check_tcp(
         assert len(item) > 1
     except Exception:
         raise CheckException(
-            'SNMP is connected, but this device does not provide TCP '
+            'SNMP is connected, but this device does not provide general TCP '
             'information. You may want to disable this check.')
 
     return state

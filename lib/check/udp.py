@@ -37,7 +37,7 @@ async def check_udp(
         assert len(item) > 1
     except Exception:
         raise CheckException(
-            'SNMP is connected, but this device does not provide UDP '
+            'SNMP is connected, but this device does not provide general UDP '
             'information. You may want to disable this check.')
 
     return state
