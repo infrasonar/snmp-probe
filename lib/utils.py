@@ -101,13 +101,9 @@ def ip_mib_address(key, item):
         local_typ_name, local_typ_func = ADDRESS_TP[local_typ]
         local_addr = local_typ_func(key[1:])
     except Exception:
-        if key[:3] == (2, 1, 4):
-            # Some devices (noticed with APC) have an invalid `2` in front
-            # of the OID but aren't IPv6. For example: 2.1.4.192.168.0.1
-            # Just strip the `2` and try again.
-            key = '.'.join([str(k) for k in key[1:]])
-            return ip_mib_address(key, item)
-
+        # Some devices (noticed with APC) have an invalid `2` in front
+        # of the OID but aren't IPv6. For example: 2.1.4.192.168.0.1
+        # We tried stripping the `2` but other metrics are missing as well.
         if not (
             isinstance(item.get('Addr'), str) and
             isinstance(item.get('AddrType'), str)
