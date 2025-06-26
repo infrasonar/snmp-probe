@@ -27,6 +27,10 @@ def addr_ipv4(octets):
     if len(octets) == n + 1 == 5:
         # IPv4 in format like 192,168,0,0
         return '.'.join(map(str, octets[1:5]))
+    elif len(octets) == 4:
+        # Assume just the IP without explicit length
+        # (we found this scenario with IP camera's)
+        return '.'.join(map(str, octets))
 
     # Assume string format:
     def _chr(x):
