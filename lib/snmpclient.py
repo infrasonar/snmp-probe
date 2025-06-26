@@ -22,6 +22,13 @@ def get_snmp_client(
 
     version = asset_config.get('version', '2c')
 
+    if check_config.get('_interval', 60) <= 120:
+        # for 2 minute or smaller intervals
+        timeouts = (20, 10, 10)
+    else:
+        # increased timeouts for larger intervals
+        timeouts = (30, 20, 20)
+
     try:
         if version == '2c':
             community = asset_config.get('community', 'public')
@@ -32,6 +39,7 @@ def get_snmp_client(
             cl = Snmp(
                 host=address,
                 community=community,
+                timeouts=timeouts,
             )
         elif version == '3':
             username = asset_config.get('username')
@@ -60,6 +68,7 @@ def get_snmp_client(
                 username=username,
                 auth=auth,
                 priv=priv,
+                timeouts=timeouts,
             )
         elif version == '1':
             community = asset_config.get('community', 'public')
@@ -70,6 +79,7 @@ def get_snmp_client(
             cl = SnmpV1(
                 host=address,
                 community=community,
+                timeouts=timeouts,
             )
         else:
             raise SnmpInvalidConfig(f'unsupported snmp version {version}')
