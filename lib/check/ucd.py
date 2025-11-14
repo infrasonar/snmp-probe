@@ -39,7 +39,8 @@ class CheckUcd(Check):
                     item[metric] *= 1024
 
             if 'memTotalReal' in item and 'memAvailReal' in item:
-                item['memUsedReal'] = item['memTotalReal'] - item['memAvailReal']
+                item['memUsedReal'] = \
+                    item['memTotalReal'] - item['memAvailReal']
                 item['memUsedRealPercentage'] = \
                     100 * item['memUsedReal'] / item['memTotalReal'] \
                     if item['memTotalReal'] else None
@@ -48,7 +49,8 @@ class CheckUcd(Check):
                     if item['memTotalReal'] else None
 
             if 'memTotalSwap' in item and 'memAvailSwap' in item:
-                item['memUsedSwap'] = item['memTotalSwap'] - item['memAvailSwap']
+                item['memUsedSwap'] = \
+                    item['memTotalSwap'] - item['memAvailSwap']
                 item['memUsedSwapPercentage'] = \
                     100 * item['memUsedSwap'] / item['memTotalSwap'] \
                     if item['memTotalSwap'] else None
@@ -63,8 +65,8 @@ class CheckUcd(Check):
             # this rule also applies to memBuffer and memCached
             if 'memUsedReal' in item and 'memBuffer' in item and \
                     'memCached' in item:
-                item['memUsedHuman'] = item['memUsedReal'] - item['memBuffer'] \
-                    - item['memCached']
+                item['memUsedHuman'] = \
+                    item['memUsedReal'] - item['memBuffer'] - item['memCached']
                 item['memUsedHumanPercentage'] = \
                     100 * item['memUsedHuman'] / item['memTotalReal'] \
                     if item['memTotalReal'] else None

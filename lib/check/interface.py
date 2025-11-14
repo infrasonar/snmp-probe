@@ -192,12 +192,12 @@ class CheckInterface(Check):
                 name = item['Descr']
                 assert isinstance(name, str)
             except (KeyError, AssertionError):
-                suggest = (
+                sgst = (
                     '; You might want to disable the option: '
                     'Include all interfaces'
                 ) if include_all else ''
                 raise CheckException(
-                    f'Missing ifDesc OID for creating an interface name{suggest}')
+                    f'Missing ifDesc OID for creating an interface name{sgst}')
 
             if not include_all and should_exclude_name(name):
                 continue

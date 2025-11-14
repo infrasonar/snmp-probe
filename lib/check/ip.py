@@ -12,7 +12,7 @@ QUERIES = (
 
 class CheckIp(Check):
     key = 'ip'
-    unchanged_eol = 14400
+    # unchanged_eol = 14400
 
     @staticmethod
     async def run(asset: Asset, local_config: dict, config: dict) -> dict:
@@ -30,7 +30,7 @@ class CheckIp(Check):
             assert len(item) > 1
         except Exception:
             raise CheckException(
-                'SNMP is connected, but this device does not provide general IP '
-                'information. You may want to disable this check.')
+                'SNMP is connected, but this device does not provide general '
+                'IP information. You may want to disable this check.')
 
         return state
