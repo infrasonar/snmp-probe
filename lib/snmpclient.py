@@ -14,15 +14,15 @@ class SnmpInvalidConfig(Exception):
 
 def get_snmp_client(
         asset: Asset,
-        asset_config: dict,
-        check_config: dict) -> Union[Snmp, SnmpV1, SnmpV3]:
-    address = check_config.get('address')
+        local_config: dict,
+        config: dict) -> Union[Snmp, SnmpV1, SnmpV3]:
+    address = config.get('address')
     if not address:
         address = asset.name
 
-    version = asset_config.get('version', '2c')
+    version = local_config.get('version', '2c')
 
-    if check_config.get('_interval', 60) <= 120:
+    if config.get('_interval', 60) <= 120:
         # for 2 minute or smaller intervals
         timeouts = (20, 10, 10)
     else:
@@ -31,7 +31,7 @@ def get_snmp_client(
 
     try:
         if version == '2c':
-            community = asset_config.get('community', 'public')
+            community = local_config.get('community', 'public')
             if isinstance(community, dict):
                 community = community.get('secret')
             if not isinstance(community, str):
@@ -42,10 +42,10 @@ def get_snmp_client(
                 timeouts=timeouts,
             )
         elif version == '3':
-            username = asset_config.get('username')
+            username = local_config.get('username')
             if not isinstance(username, str):
                 raise SnmpInvalidConfig('`username` must be a string.')
-            auth = asset_config.get('auth')
+            auth = local_config.get('auth')
             if auth:
                 auth_proto = AUTH_PROTO.get(auth.get('type'))
                 auth_passwd = auth.get('password')
@@ -54,7 +54,7 @@ def get_snmp_client(
                 elif not isinstance(auth_passwd, str):
                     raise SnmpInvalidConfig('`auth.password` must be string')
                 auth = (auth_proto, auth_passwd)
-            priv = auth and asset_config.get('priv')
+            priv = auth and local_config.get('priv')
             if priv:
                 priv_proto = PRIV_PROTO.get(priv.get('type'))
                 priv_passwd = priv.get('password')
@@ -71,7 +71,7 @@ def get_snmp_client(
                 timeouts=timeouts,
             )
         elif version == '1':
-            community = asset_config.get('community', 'public')
+            community = local_config.get('community', 'public')
             if isinstance(community, dict):
                 community = community.get('secret')
             if not isinstance(community, str):

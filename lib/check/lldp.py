@@ -1,5 +1,6 @@
 from asyncsnmplib.mib.mib_index import MIB_INDEX
 from libprobe.asset import Asset
+from libprobe.check import Check
 from ..snmpclient import get_snmp_client
 from ..snmpquery import snmpquery
 from ..utils import InterfaceLookup
@@ -12,34 +13,36 @@ QUERIES = (
 )
 
 
-async def check_lldp(
-        asset: Asset,
-        asset_config: dict,
-        check_config: dict):
+class CheckLldp(Check):
+    key = 'lldp'
+    unchanged_eol = 14400
 
-    snmp = get_snmp_client(asset, asset_config, check_config)
+    @staticmethod
+    async def run(asset: Asset, local_config: dict, config: dict) -> dict:
 
-    if_entry = InterfaceLookup.get(asset.id)
-    if if_entry is None:
-        state_data = await snmpquery(snmp, QUERIES, True)
-        if_entry = InterfaceLookup.set(asset.id, state_data.get('if', []))
-    else:
-        state_data = await snmpquery(snmp, QUERIES[1:], True)
+        snmp = get_snmp_client(asset, local_config, config)
 
-    itms = state_data.get('dot1dStpPort', [])
-    base_port_entry = {
-        i.pop('name'): i
-        for i in state_data.get('dot1dBasePort', [])}
-    for item in itms:
-        key = item['name']
+        if_entry = InterfaceLookup.get(asset.id)
+        if if_entry is None:
+            state_data = await snmpquery(snmp, QUERIES, True)
+            if_entry = InterfaceLookup.set(asset.id, state_data.get('if', []))
+        else:
+            state_data = await snmpquery(snmp, QUERIES[1:], True)
 
-        try:
-            base_port_item = base_port_entry[key]
-            if_item = if_entry[base_port_item['IfIndex']]
-            item['Interface'] = if_item['Descr']
-        except Exception:
-            continue
+        itms = state_data.get('dot1dStpPort', [])
+        base_port_entry = {
+            i.pop('name'): i
+            for i in state_data.get('dot1dBasePort', [])}
+        for item in itms:
+            key = item['name']
 
-    return {
-        'lldp': itms
-    }
+            try:
+                base_port_item = base_port_entry[key]
+                if_item = if_entry[base_port_item['IfIndex']]
+                item['Interface'] = if_item['Descr']
+            except Exception:
+                continue
+
+        return {
+            'lldp': itms
+        }

@@ -1,5 +1,6 @@
 from asyncsnmplib.mib.mib_index import MIB_INDEX
 from libprobe.asset import Asset
+from libprobe.check import Check
 from libprobe.exceptions import IgnoreCheckException
 from ..snmpclient import get_snmp_client
 from ..snmpquery import snmpquery
@@ -9,23 +10,24 @@ QUERIES = (
 )
 
 
-async def check_processor(
-        asset: Asset,
-        asset_config: dict,
-        check_config: dict):
+class CheckProcessor(Check):
+    key = 'processor'
 
-    snmp = get_snmp_client(asset, asset_config, check_config)
-    state_data = await snmpquery(snmp, QUERIES, True)
+    @staticmethod
+    async def run(asset: Asset, local_config: dict, config: dict) -> dict:
 
-    hrProcessor = state_data.get('hrProcessor')
-    if not hrProcessor:
-        raise IgnoreCheckException
+        snmp = get_snmp_client(asset, local_config, config)
+        state_data = await snmpquery(snmp, QUERIES, True)
 
-    cpus = [item.get('Load', 0) for item in hrProcessor]
-    aggr = sum(cpus) / len(cpus) if cpus else 0.0
-    state_data['hrProcessorTotal'] = [{
-        'name': 'processor',
-        'LoadAverage': aggr
-    }]
+        hrProcessor = state_data.get('hrProcessor')
+        if not hrProcessor:
+            raise IgnoreCheckException
 
-    return state_data
+        cpus = [item.get('Load', 0) for item in hrProcessor]
+        aggr = sum(cpus) / len(cpus) if cpus else 0.0
+        state_data['hrProcessorTotal'] = [{
+            'name': 'processor',
+            'LoadAverage': aggr
+        }]
+
+        return state_data

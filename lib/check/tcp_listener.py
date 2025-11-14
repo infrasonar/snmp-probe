@@ -1,5 +1,6 @@
 from asyncsnmplib.mib.mib_index import MIB_INDEX
 from libprobe.asset import Asset
+from libprobe.check import Check
 from ..snmpclient import get_snmp_client
 from ..snmpquery import snmpquery
 from ..utils import tcp_mib_listener
@@ -9,15 +10,17 @@ QUERIES = (
 )
 
 
-async def check_tcp_listener(
-        asset: Asset,
-        asset_config: dict,
-        check_config: dict):
+class CheckTcpListener(Check):
+    key = 'tcpListener'
+    unchanged_eol = 14400
 
-    snmp = get_snmp_client(asset, asset_config, check_config)
-    state = await snmpquery(snmp, QUERIES, True)
+    @staticmethod
+    async def run(asset: Asset, local_config: dict, config: dict) -> dict:
 
-    for item in state['tcpListener']:
-        tcp_mib_listener(item['name'], item)
+        snmp = get_snmp_client(asset, local_config, config)
+        state = await snmpquery(snmp, QUERIES, True)
 
-    return state
+        for item in state['tcpListener']:
+            tcp_mib_listener(item['name'], item)
+
+        return state

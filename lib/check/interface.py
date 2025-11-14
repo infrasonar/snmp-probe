@@ -2,6 +2,7 @@ import re
 from asyncsnmplib.mib.mib_index import MIB_INDEX
 from collections import Counter
 from libprobe.asset import Asset
+from libprobe.check import Check
 from libprobe.exceptions import CheckException
 from ..snmpclient import get_snmp_client
 from ..snmpquery import snmpquery
@@ -158,71 +159,72 @@ def should_exclude_name(name: str) -> bool:
         any(r.match(name) for r in ExcludeIfMatch))
 
 
-async def check_interface(
-        asset: Asset,
-        asset_config: dict,
-        check_config: dict):
+class CheckInterface(Check):
+    key = 'interface'
 
-    include_all = check_config.get('includeAllInterfaces', False)
+    @staticmethod
+    async def run(asset: Asset, local_config: dict, config: dict) -> dict:
 
-    snmp = get_snmp_client(asset, asset_config, check_config)
-    state_data = await snmpquery(snmp, QUERIES, True)
+        include_all = config.get('includeAllInterfaces', False)
 
-    counts = Counter()
-    itms = state_data.get('if', [])
+        snmp = get_snmp_client(asset, local_config, config)
+        state_data = await snmpquery(snmp, QUERIES, True)
 
-    # lookup is used by lldp check
-    InterfaceLookup.set(asset.id, itms)
+        counts = Counter()
+        itms = state_data.get('if', [])
 
-    items = []
-    if_x_entry = {i.pop('name'): i for i in state_data.pop('ifX', [])}
-    for item in itms:
-        key = item['name']
-        if not include_all and item.get('Type') in ExcludedIfTypes:
-            continue
+        # lookup is used by lldp check
+        InterfaceLookup.set(asset.id, itms)
 
-        mac = item.get('PhysAddress')
-        if not include_all and isinstance(mac, str) and any(
-                mac.startswith(e) for e in ReservedAddresses):
-            continue
+        items = []
+        if_x_entry = {i.pop('name'): i for i in state_data.pop('ifX', [])}
+        for item in itms:
+            key = item['name']
+            if not include_all and item.get('Type') in ExcludedIfTypes:
+                continue
 
-        try:
-            name = item['Descr']
-            assert isinstance(name, str)
-        except (KeyError, AssertionError):
-            suggest = (
-                '; You might want to disable the option: '
-                'Include all interfaces'
-            ) if include_all else ''
-            raise CheckException(
-                f'Missing ifDesc OID for creating an interface name{suggest}')
+            mac = item.get('PhysAddress')
+            if not include_all and isinstance(mac, str) and any(
+                    mac.startswith(e) for e in ReservedAddresses):
+                continue
 
-        if not include_all and should_exclude_name(name):
-            continue
+            try:
+                name = item['Descr']
+                assert isinstance(name, str)
+            except (KeyError, AssertionError):
+                sgst = (
+                    '; You might want to disable the option: '
+                    'Include all interfaces'
+                ) if include_all else ''
+                raise CheckException(
+                    f'Missing ifDesc OID for creating an interface name{sgst}')
 
-        idx = counts[name]
-        counts[name] += 1
-        item['name'] = f'{name}_{idx}' if idx else name
+            if not include_all and should_exclude_name(name):
+                continue
 
-        items.append(item)
+            idx = counts[name]
+            counts[name] += 1
+            item['name'] = f'{name}_{idx}' if idx else name
 
-        try:
-            item.update(if_x_entry[key])
-        except KeyError:
-            continue  # no 64 bit counter, skip code below
+            items.append(item)
 
-        for _64_bit_name in _64_BIT_COUNTERS:
-            if _64_bit_name in item:
-                _32_bit_name = _64_bit_name[2:]
-                item[_32_bit_name] = item.pop(_64_bit_name)
+            try:
+                item.update(if_x_entry[key])
+            except KeyError:
+                continue  # no 64 bit counter, skip code below
 
-        if 'Speed' in item and 'HighSpeed' in item:
-            # max value for this metric, shown if value is overloading
-            if (item['Speed'] == 4294967295 and
-                    item['HighSpeed'] != 4294):
-                # ifspeed is in bits, ifHighSpeed in MBits.
-                item['Speed'] = item['HighSpeed'] * 1000000
+            for _64_bit_name in _64_BIT_COUNTERS:
+                if _64_bit_name in item:
+                    _32_bit_name = _64_bit_name[2:]
+                    item[_32_bit_name] = item.pop(_64_bit_name)
 
-    return {
-        'interface': items
-    }
+            if 'Speed' in item and 'HighSpeed' in item:
+                # max value for this metric, shown if value is overloading
+                if (item['Speed'] == 4294967295 and
+                        item['HighSpeed'] != 4294):
+                    # ifspeed is in bits, ifHighSpeed in MBits.
+                    item['Speed'] = item['HighSpeed'] * 1000000
+
+        return {
+            'interface': items
+        }
