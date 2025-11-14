@@ -1,6 +1,7 @@
 from asyncsnmplib.mib.mib_index import MIB_INDEX
 from collections import Counter
 from libprobe.asset import Asset
+from libprobe.check import Check
 from ..snmpclient import get_snmp_client
 from ..snmpquery import snmpquery
 
@@ -23,62 +24,63 @@ _TO_BYTES = (
 )
 
 
-async def check_ucd(
-        asset: Asset,
-        asset_config: dict,
-        check_config: dict):
+class CheckUcd(Check):
+    key = 'ucd'
 
-    snmp = get_snmp_client(asset, asset_config, check_config)
-    state_data = await snmpquery(snmp, QUERIES, True)
+    @staticmethod
+    async def run(asset: Asset, local_config: dict, config: dict) -> dict:
 
-    for item in state_data.get('memory', []):
-        for metric in _TO_BYTES:
-            if metric in item:
-                item[metric] *= 1024
+        snmp = get_snmp_client(asset, local_config, config)
+        state_data = await snmpquery(snmp, QUERIES, True)
 
-        if 'memTotalReal' in item and 'memAvailReal' in item:
-            item['memUsedReal'] = item['memTotalReal'] - item['memAvailReal']
-            item['memUsedRealPercentage'] = \
-                100 * item['memUsedReal'] / item['memTotalReal'] \
-                if item['memTotalReal'] else None
-            item['memAvailRealPercentage'] = \
-                100 * item['memAvailReal'] / item['memTotalReal'] \
-                if item['memTotalReal'] else None
+        for item in state_data.get('memory', []):
+            for metric in _TO_BYTES:
+                if metric in item:
+                    item[metric] *= 1024
 
-        if 'memTotalSwap' in item and 'memAvailSwap' in item:
-            item['memUsedSwap'] = item['memTotalSwap'] - item['memAvailSwap']
-            item['memUsedSwapPercentage'] = \
-                100 * item['memUsedSwap'] / item['memTotalSwap'] \
-                if item['memTotalSwap'] else None
-            item['memFreeSwapPercentage'] = \
-                100 * item['memAvailSwap'] / item['memTotalSwap'] \
-                if item['memTotalSwap'] else None
+            if 'memTotalReal' in item and 'memAvailReal' in item:
+                item['memUsedReal'] = item['memTotalReal'] - item['memAvailReal']
+                item['memUsedRealPercentage'] = \
+                    100 * item['memUsedReal'] / item['memTotalReal'] \
+                    if item['memTotalReal'] else None
+                item['memAvailRealPercentage'] = \
+                    100 * item['memAvailReal'] / item['memTotalReal'] \
+                    if item['memTotalReal'] else None
 
-        # UCD-SNMP-MIB says:
-        # This object will not be implemented on hosts where the
-        # underlying operating system does not distinguish text
-        # pages from other uses of physical memory."
-        # this rule also applies to memBuffer and memCached
-        if 'memUsedReal' in item and 'memBuffer' in item and \
-                'memCached' in item:
-            item['memUsedHuman'] = item['memUsedReal'] - item['memBuffer'] \
-                - item['memCached']
-            item['memUsedHumanPercentage'] = \
-                100 * item['memUsedHuman'] / item['memTotalReal'] \
-                if item['memTotalReal'] else None
+            if 'memTotalSwap' in item and 'memAvailSwap' in item:
+                item['memUsedSwap'] = item['memTotalSwap'] - item['memAvailSwap']
+                item['memUsedSwapPercentage'] = \
+                    100 * item['memUsedSwap'] / item['memTotalSwap'] \
+                    if item['memTotalSwap'] else None
+                item['memFreeSwapPercentage'] = \
+                    100 * item['memAvailSwap'] / item['memTotalSwap'] \
+                    if item['memTotalSwap'] else None
 
-    counts = Counter()
-    for item in state_data.get('diskIO', []):
-        name = item['Device']
-        idx = counts[name]
-        counts[name] += 1
-        item['name'] = f'{name}_{idx}' if idx else name
+            # UCD-SNMP-MIB says:
+            # This object will not be implemented on hosts where the
+            # underlying operating system does not distinguish text
+            # pages from other uses of physical memory."
+            # this rule also applies to memBuffer and memCached
+            if 'memUsedReal' in item and 'memBuffer' in item and \
+                    'memCached' in item:
+                item['memUsedHuman'] = item['memUsedReal'] - item['memBuffer'] \
+                    - item['memCached']
+                item['memUsedHumanPercentage'] = \
+                    100 * item['memUsedHuman'] / item['memTotalReal'] \
+                    if item['memTotalReal'] else None
 
-    counts = Counter()
-    for item in state_data.get('dsk', []):
-        name = item['Device']
-        idx = counts[name]
-        counts[name] += 1
-        item['name'] = f'{name}_{idx}' if idx else name
+        counts = Counter()
+        for item in state_data.get('diskIO', []):
+            name = item['Device']
+            idx = counts[name]
+            counts[name] += 1
+            item['name'] = f'{name}_{idx}' if idx else name
 
-    return state_data
+        counts = Counter()
+        for item in state_data.get('dsk', []):
+            name = item['Device']
+            idx = counts[name]
+            counts[name] += 1
+            item['name'] = f'{name}_{idx}' if idx else name
+
+        return state_data

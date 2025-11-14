@@ -1,5 +1,6 @@
 from asyncsnmplib.mib.mib_index import MIB_INDEX
 from libprobe.asset import Asset
+from libprobe.check import Check
 from libprobe.exceptions import IncompleteResultException
 from ..exceptions import ParseKeyException
 from ..snmpclient import get_snmp_client
@@ -11,26 +12,27 @@ QUERIES = (
 )
 
 
-async def check_ip_address(
-        asset: Asset,
-        asset_config: dict,
-        check_config: dict):
+class CheckIpAddress(Check):
+    key = 'ipAddress'
 
-    snmp = get_snmp_client(asset, asset_config, check_config)
-    state = await snmpquery(snmp, QUERIES, True)
+    @staticmethod
+    async def run(asset: Asset, local_config: dict, config: dict) -> dict:
 
-    rows = state['ipAddress']
-    result = []
-    missing = []
-    for item in rows:
-        try:
-            result.append(ip_mib_address(item['name'], item))
-        except ParseKeyException as e:
-            missing.append(str(e))
+        snmp = get_snmp_client(asset, local_config, config)
+        state = await snmpquery(snmp, QUERIES, True)
 
-    state['ipAddress'] = result
-    if missing:
-        oids = ', '.join(missing)
-        msg = f'Unable to derive address info from oid(s): {oids}'
-        raise IncompleteResultException(msg, state)
-    return state
+        rows = state['ipAddress']
+        result = []
+        missing = []
+        for item in rows:
+            try:
+                result.append(ip_mib_address(item['name'], item))
+            except ParseKeyException as e:
+                missing.append(str(e))
+
+        state['ipAddress'] = result
+        if missing:
+            oids = ', '.join(missing)
+            msg = f'Unable to derive address info from oid(s): {oids}'
+            raise IncompleteResultException(msg, state)
+        return state

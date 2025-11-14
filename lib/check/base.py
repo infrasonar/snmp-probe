@@ -1,5 +1,6 @@
 from asyncsnmplib.mib.mib_index import MIB_INDEX
 from libprobe.asset import Asset
+from libprobe.check import Check
 from ..snmpclient import get_snmp_client
 from ..snmpquery import snmpquery
 
@@ -8,18 +9,19 @@ QUERIES = (
 )
 
 
-async def check_base(
-        asset: Asset,
-        asset_config: dict,
-        check_config: dict):
+class CheckBase(Check):
+    key = 'base'
 
-    snmp = get_snmp_client(asset, asset_config, check_config)
-    state = await snmpquery(snmp, QUERIES, True)
+    @staticmethod
+    async def run(asset: Asset, local_config: dict, config: dict) -> dict:
 
-    return {
-        'base': [{
-            (name[3:] if name.startswith('sys') else name): value
-            for item in state.get('system', [])
-            for name, value in item.items()
-        }]
-    }
+        snmp = get_snmp_client(asset, local_config, config)
+        state = await snmpquery(snmp, QUERIES, True)
+
+        return {
+            'base': [{
+                (name[3:] if name.startswith('sys') else name): value
+                for item in state.get('system', [])
+                for name, value in item.items()
+            }]
+        }
