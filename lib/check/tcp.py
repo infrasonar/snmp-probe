@@ -17,7 +17,6 @@ _64_BIT_COUNTERS = (
 
 class CheckTcp(Check):
     key = 'tcp'
-    # unchanged_eol = 14400
 
     @staticmethod
     async def run(asset: Asset, local_config: dict, config: dict) -> dict:
