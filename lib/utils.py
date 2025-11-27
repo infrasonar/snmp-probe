@@ -56,7 +56,7 @@ def addr_ipv6(octets):
 
     # Assume string format:
     def _chr(x):
-        assert 46 <= x < 96  # IPv6
+        assert 46 <= x <= 102  # IPv6  from '.' till 'f'
         return chr(x)
 
     return ''.join(_chr(x) for x in octets[1:n + 1])
