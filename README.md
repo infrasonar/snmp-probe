@@ -42,8 +42,6 @@ For SNMP version 3:
 snmp:
   config:
     version: "3"
-    community:
-      secret: public
     username: alice
     auth:
       # auth is optional; type USM_AUTH_NONE is used when omitted.

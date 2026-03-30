@@ -188,16 +188,16 @@ class CheckInterface(Check):
                     mac.startswith(e) for e in ReservedAddresses):
                 continue
 
-            try:
-                name = item['Descr']
-                assert isinstance(name, str)
-            except (KeyError, AssertionError):
-                sgst = (
-                    '; You might want to disable the option: '
-                    'Include all interfaces'
-                ) if include_all else ''
-                raise CheckException(
-                    f'Missing ifDesc OID for creating an interface name{sgst}')
+            name = item.get('Descr')
+            if not isinstance(name, str):
+                if include_all:
+                    msg = (
+                        'Missing ifDesc OID for creating an interface name; '
+                        'You might want to disable the option: '
+                        'Include all interfaces'
+                    ) if include_all else ''
+                    raise CheckException(msg)
+                continue  # exclude item without a ifDescr OID
 
             if not include_all and should_exclude_name(name):
                 continue
