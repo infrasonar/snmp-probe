@@ -136,7 +136,7 @@ def ip_mib_address(key, item):
             prefix_len = prefix_key[-1]
         except Exception:
             raise Exception('Unable to derive address-prefix info from '
-                            f'oid-part {prefix_key}')
+                            f'oid `{prefix}`')
         item['PrefixIfIndex'] = prefix_ifindex
         item['PrefixType'] = prefix_typ_name
         item['PrefixAddr'] = prefix_addr
