@@ -118,18 +118,17 @@ def ip_mib_address(key, item):
         item['Addr'] = local_addr
 
     # when value is 0.0 or 1.1 ignore
+    # value has to start with the ipAddressPrefixOrigin oid
     # some devices don't follow mib's syntax and return None
     # in case of an unparseable int instead of a RowPointer (oid)
-    if 'Prefix' in item and item['Prefix'] not in (
-        'zeroDotZero',  # oid 0.0
-        'internet',  # oid 1.1
-        None,
-    ):
+    prefix = item.get('Prefix')
+    oid_origin = '1.3.6.1.2.1.4.32.1.5'
+    if isinstance(prefix, str) and prefix.startswith(oid_origin) and \
+            len(prefix) > len(oid_origin):
         prefix_key = None
         n = 10  # length of 1.3.6.1.2.1.4.32.1.5 IP-MIB::ipAddressPrefixOrigin
         try:
-            prefix_key = tuple(
-                map(int, item['Prefix'].split('.')[n:]))
+            prefix_key = tuple(map(int, prefix.split('.')[n:]))
             prefix_ifindex = prefix_key[0]
             prefix_typ = prefix_key[1]
             prefix_typ_name, prefix_typ_func = ADDRESS_TP[prefix_typ]
