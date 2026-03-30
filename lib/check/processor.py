@@ -23,11 +23,18 @@ class CheckProcessor(Check):
         if not hrProcessor:
             raise IgnoreCheckException
 
-        cpus = [item.get('Load', 0) for item in hrProcessor]
-        aggr = sum(cpus) / len(cpus) if cpus else 0.0
-        state_data['hrProcessorTotal'] = [{
-            'name': 'processor',
-            'LoadAverage': aggr
-        }]
+        cpus = [
+            item
+            for item in hrProcessor
+            if item.get('Load') is not None
+        ]
+        cpu_load_total = sum(item['Load'] for item in cpus)
+        aggr = cpu_load_total / len(cpus) if cpus else 0.0
 
-        return state_data
+        return {
+            'hrProcessor': cpus,
+            'hrProcessorTotal': [{
+                'name': 'processor',
+                'LoadAverage': aggr
+            }]
+        }
