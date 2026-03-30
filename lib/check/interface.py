@@ -191,12 +191,11 @@ class CheckInterface(Check):
             name = item.get('Descr')
             if not isinstance(name, str):
                 if include_all:
-                    msg = (
+                    raise CheckException(
                         'Missing ifDesc OID for creating an interface name; '
                         'You might want to disable the option: '
                         'Include all interfaces'
-                    ) if include_all else ''
-                    raise CheckException(msg)
+                    )
                 continue  # exclude item without a ifDescr OID
 
             if not include_all and should_exclude_name(name):
