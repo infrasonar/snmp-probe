@@ -65,7 +65,6 @@ ExcludedIfTypes = (
     'ieee80211',
     'l3ipvlan',
     'l2vlan',
-    'propVirtual',
 )
 
 # Interfaces where the description starts with one of these words will be
