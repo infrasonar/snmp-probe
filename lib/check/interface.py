@@ -201,6 +201,16 @@ class CheckInterface(Check):
             if not include_all and should_exclude_name(name):
                 continue
 
+            mtu = item.get('Mtu')
+            if mtu is None:
+                if include_all:
+                    raise CheckException(
+                        'Incomplete ifEntry missing ifMtu OID; '
+                        'You might want to disable the option: '
+                        'Include all interfaces'
+                    )
+                continue  # exclude item without a ifMtu OID
+
             idx = counts[name]
             counts[name] += 1
             item['name'] = f'{name}_{idx}' if idx else name
