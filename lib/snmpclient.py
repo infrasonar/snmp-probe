@@ -22,12 +22,16 @@ def get_snmp_client(
 
     version = local_config.get('version', '2c')
 
-    if config.get('_interval', 60) <= 120:
+    interval = config.get('_interval', 60)
+    if interval <= 120:
         # for 2 minute or smaller intervals
         timeouts = (20, 10, 10)
+    elif interval <= 540:
+        # default for all between 2 and 10 minute intervals
+        timeouts = (30, 20, 20)
     else:
         # increased timeouts for larger intervals
-        timeouts = (30, 20, 20)
+        timeouts = (60, 40, 20)
 
     try:
         if version == '2c':
