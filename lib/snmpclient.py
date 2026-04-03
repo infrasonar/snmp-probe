@@ -2,6 +2,7 @@ import logging
 from asyncsnmplib.client import Snmp, SnmpV1, SnmpV3
 from asyncsnmplib.v3.auth import AUTH_PROTO
 from asyncsnmplib.v3.encr import PRIV_PROTO
+from asyncsnmplib.v3.cache import SnmpV3Cache
 from libprobe.asset import Asset
 from libprobe.exceptions import CheckException
 from typing import Union
@@ -10,6 +11,9 @@ from . import DOCS_URL
 
 class SnmpInvalidConfig(Exception):
     pass
+
+
+V3_CACHE = {}
 
 
 def get_snmp_client(
@@ -67,11 +71,18 @@ def get_snmp_client(
                 elif not isinstance(priv_passwd, str):
                     raise SnmpInvalidConfig('`priv.password` must be string')
                 priv = (priv_proto, priv_passwd)
+
+            key = (asset.id, address, username, auth, priv)
+            cache = V3_CACHE.get(key)
+            if key not in V3_CACHE:
+                V3_CACHE[key] = cache = SnmpV3Cache(username, auth, priv)
+
             cl = SnmpV3(
                 host=address,
                 username=username,
                 auth=auth,
                 priv=priv,
+                cache=cache,
                 timeouts=timeouts,
             )
         elif version == '1':
