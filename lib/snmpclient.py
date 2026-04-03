@@ -31,13 +31,13 @@ def get_snmp_client(
         # for 2 minute or smaller intervals
         timeouts = (20, 10, 10)
     elif interval <= 240:
-        # default for all between 2 and 4 minute intervals
+        # default for all between 2 and 5 minute intervals
         timeouts = (30, 20, 20)
     elif interval <= 540:
         # default for all between 4 and 10 minute intervals
         timeouts = (50, 30, 30)
     else:
-        # increased timeouts for larger intervals
+        # increased timeouts for 10 minute or larger intervals
         timeouts = (60, 40, 40)
 
     try:
