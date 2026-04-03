@@ -74,7 +74,7 @@ def get_snmp_client(
 
             key = (asset.id, address, username, auth, priv)
             cache = V3_CACHE.get(key)
-            if key not in V3_CACHE:
+            if cache is None:
                 V3_CACHE[key] = cache = SnmpV3Cache(username, auth, priv)
 
             cl = SnmpV3(
