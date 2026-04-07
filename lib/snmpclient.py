@@ -38,7 +38,7 @@ def get_snmp_client(
         timeouts = (50, 50, 30)
     else:
         # increased timeouts for 10 minute or larger intervals
-        timeouts = (50, 60, 40, 40, 40)
+        timeouts = (50, 90, 40, 40)
 
     try:
         if version == '2c':
