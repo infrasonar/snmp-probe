@@ -1,6 +1,6 @@
 import ipaddress
 import time
-from typing import Union, Any
+from typing import Any
 from .exceptions import ParseKeyException
 
 
@@ -9,7 +9,7 @@ class InterfaceLookup:
     _MAX_AGE = 900
 
     @classmethod
-    def get(cls, asset_id: int) -> Union[dict[int, dict[str, Any]], None]:
+    def get(cls, asset_id: int) -> dict[int, dict[str, Any]] | None:
         ts, data = cls._lk.get(asset_id, (None, None))
         if ts is None or time.time() - ts > cls._MAX_AGE:
             return
