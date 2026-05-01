@@ -5,7 +5,6 @@ from asyncsnmplib.v3.encr import PRIV_PROTO
 from asyncsnmplib.v3.cache import SnmpV3Cache
 from libprobe.asset import Asset
 from libprobe.exceptions import CheckException
-from typing import Union
 from . import DOCS_URL
 
 
@@ -19,7 +18,7 @@ V3_CACHE = {}
 def get_snmp_client(
         asset: Asset,
         local_config: dict,
-        config: dict) -> Union[Snmp, SnmpV1, SnmpV3]:
+        config: dict) -> Snmp | SnmpV1 | SnmpV3:
     address = config.get('address')
     if not address:
         address = asset.name
