@@ -26,6 +26,10 @@ class CheckIpAddress(Check):
         result = []
         missing = []
         for item in rows:
+
+            # remove unused metric
+            item.pop('LastChanged', None)
+
             try:
                 result.append(ip_mib_address(item['name'], item))
             except ParseKeyException as e:
